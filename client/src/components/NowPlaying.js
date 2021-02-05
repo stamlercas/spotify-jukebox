@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import TrackDisplay from './TrackDisplay.js';
-import { fetchSpotifyData } from "../util/ComponentUtils.js";
+import ServerApiClient from '../client/ServerApiClient.js';
+import AvailableDeviceModal from "./AvailableDeviceModal.js";
+
+const queryStringParser = require('query-string');
 
 const PlayerState = {
     Loading: 'Loading...', 
@@ -13,12 +16,27 @@ class NowPlaying extends Component {
         super(props);
         this.state = {
             data: {},
-            playerState: PlayerState.Loading
-        };
+            playerState: PlayerState.Loading,
+            showModal: false
+        }
+
+        this.toggleModal = this.toggleModal.bind(this);
+        this.getDisplay = this.getDisplay.bind(this);
+    }
+
+    toggleModal() {
+        this.setState({
+            showModal: !this.state.showModal
+        });
+        console.log('toggle');
     }
 
     componentDidMount() {
-        fetchSpotifyData("/api/nowplaying").then(res => {
+        let queryParameters = queryStringParser.parse(this.props.location.search);
+        if (queryParameters.activation_success) {   // server side was just activated, so prompt to select available devices
+            this.toggleModal();
+        }
+        ServerApiClient.getNowPlaying().then(res => {
             let status = res.statusCode;
             this.setState({
                 data: res.body,
@@ -27,18 +45,29 @@ class NowPlaying extends Component {
         });
     }
 
-    render() {
+    /**
+     * Get display based on PlayerState
+     */
+    getDisplay() {
         switch(this.state.playerState) {
-            case PlayerState.Loading:
-            case PlayerState.Not_Playing:
-                return (
-                    <h2 class="text-center">{this.state.playerState}</h2>
-                );
             case PlayerState.Playing:
                 return (
                     <TrackDisplay track={this.state.data.item} />
                 );
+            default:
+                return (
+                    <h2 class="text-center">{this.state.playerState}</h2>
+                );
         }
+    }
+
+    render() {
+        return (
+            <div>
+                {this.getDisplay()}
+                <AvailableDeviceModal show={this.state.showModal} close={this.toggleModal} />
+            </div>
+        )
     }
 }
 

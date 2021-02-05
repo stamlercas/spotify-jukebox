@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import ArtistListItem from "./ArtistListItem.js";
 import TrackListItem from "./TrackListItem.js";
-import { fetchSpotifyData } from "../util/ComponentUtils.js";
+import ServerApiClient from '../client/ServerApiClient.js';
+
+const queryStringParser = require('query-string');
 
 const SearchState = {
     Loading: 'Loading...',
@@ -24,7 +26,9 @@ class Search extends Component {
             this.setState({searchState: SearchState.No_Query});
             return;
         }
-        fetchSpotifyData("/api/search/" + this.props.location.search).then(res => {
+
+        let queryParameters = queryStringParser.parse(this.props.location.search);
+        ServerApiClient.search(queryParameters.q).then(res => {
             let status = res.statusCode;
             this.setState({
                 data: res,
@@ -43,15 +47,23 @@ class Search extends Component {
             case SearchState.Search_Success:
                 return (
                     <div>
-                        <h3>Artists</h3>
-                        <ul class="list-group list-group-flush">
-                            {this.state.data.artists.items.map(artist => <ArtistListItem artist={artist}/>)}
-                        </ul>
-                        <br />
-                        <h3>Tracks</h3>
-                        <ul class="list-group list-group-flush">
-                            {this.state.data.tracks.items.map(track => <TrackListItem track={track}/>)}
-                        </ul>
+                        {this.state.data.artists.items.length > 0 &&
+                        <div>
+                            <h3>Artists</h3>
+                            <ul class="list-group list-group-flush">
+                                {this.state.data.artists.items.map(artist => <ArtistListItem artist={artist}/>)}
+                            </ul>
+                            <br />
+                        </div>
+                        }
+                        {this.state.data.tracks.items.length > 0 &&
+                        <div>
+                            <h3>Tracks</h3>
+                            <ul class="list-group list-group-flush">
+                                {this.state.data.tracks.items.map(track => <TrackListItem track={track}/>)}
+                            </ul>
+                        </div>
+                        }
                     </div>
                 );
         }

@@ -1,7 +1,18 @@
+.band-title {
+    margin-top: .25em;
+    margin-bottom: .05em;
+}
+
 .list-img {
     max-height:3em;
 }
 
 .play-icon {
     font-size:3em;
+}
+
+.home-icon {
+    padding-top: 0;
+    margin-right:.15em;
+    font-size:1.6rem;
 }

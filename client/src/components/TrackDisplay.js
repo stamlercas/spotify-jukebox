@@ -16,7 +16,7 @@ class TrackDisplay extends Component {
                     <div class="col-2"></div>
                 </div>
                 <div class="text-center">
-                    <h4>{artists.join(", ")}</h4>
+                    <h4 class="band-title">{artists.join(", ")}</h4>
                 </div>
                 <div class="text-center">
                     {albumName}

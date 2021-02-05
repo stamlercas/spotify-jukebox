@@ -15,7 +15,6 @@ class TrackListItem extends Component {
         this.setState({
             showModal: !this.state.showModal
         });
-        console.log('yep');
     }
 
     render() {

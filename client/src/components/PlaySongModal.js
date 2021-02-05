@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Button, Modal }from 'react-bootstrap';
 import TrackDisplay from './TrackDisplay.js';
-import { fetchSpotifyData, formatArtists } from '../util/ComponentUtils.js';
+import ServerApiClient from '../client/ServerApiClient.js';
 
 class PlaySongModal extends Component {
     constructor(props) {
@@ -14,10 +14,7 @@ class PlaySongModal extends Component {
     }
 
     playSong() {
-        fetchSpotifyData('/api/queue', 'POST', {
-            uri: this.props.track.uri,
-        });
-        this.props.close();
+        ServerApiClient.addToQueue(this.props.track.uri).then(() => this.props.close());
     }
 
     render() {

@@ -16,6 +16,8 @@ var spotifyApi = new SpotifyWebApi({
 
 var firstSongQueued = true;
 
+var deviceId = null;
+
 /**
  * Router level middleware to detect that authorization has been made to use spotify
  */
@@ -84,10 +86,10 @@ router.post('/queue', function(req, res, next) {
   }
 
   let uri = req.body.uri;
-  spotifyApi.addToQueue(uri)
+  spotifyApi.addToQueue(uri, { device_id: deviceId })
     .then(result => {
-      if (firstSongQueued) { // do some more setup, skip to next (which is the one just queued) and play
-        spotifyApi.skipToNext().then(() => spotifyApi.play());
+      if (firstSongQueued) { // do some more setup, skip to next (which is the one just queued) and play from selected available device
+        spotifyApi.skipToNext(); // this should automatically start playing
         firstSongQueued = false;
       }
     })
@@ -95,23 +97,46 @@ router.post('/queue', function(req, res, next) {
       res.statusCode = 204;
       res.end();
     }).catch(error => {
-      console.log(error);
       switch(error.body.error.status) {
         case 404:
           console.log('No active device found.');
           break;
       }
       next(error);
-    });
+    });  
+});
 
-  
+/**
+ * Get available devices.
+ */
+router.get('/devices', function(req, res, next) {
+  spotifyApi.getMyDevices()
+    .then(result => res.send.bind.bind(res.send(result.body.devices)))
+    .catch(error => next(error));
+});
+
+/**
+ * Set available device.
+ */
+router.post('/devices', function(req, res, next) {
+  if (!req.body.deviceId || req.body.deviceId == '') {
+    res.statusCode = 406;
+    res.json({ message: "No query found." });
+    return;
+  }
+
+  deviceId = req.body.deviceId;
+  spotifyApi.transferMyPlayback([deviceId]).then(res => console.log('Set device: ' + deviceId));
+
+  res.statusCode = 204;
+  res.end();
 });
 
 /**
  * Take the code sent from Spotify and grant an access token and save it.
  * Once done, redirect back to home page.
  */
-router.get('/setAccessToken', function (req, res) {
+router.get('/setAccessToken', function(req, res) {
   spotifyApi.authorizationCodeGrant(req.query.code).then(
     function(data) {
       // hide token values
@@ -129,7 +154,7 @@ router.get('/setAccessToken', function (req, res) {
       // response does not depend on the next calls so can call them while response is redirected
       spotifyApi.pause();
 
-      res.redirect(req.protocol + '://' + req.get('host') + '/');
+      res.redirect(req.protocol + '://' + req.get('host') + '/?activation_success=true');
     },
     function(err) {
       console.log('Something went wrong!', err);
