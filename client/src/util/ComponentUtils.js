@@ -22,10 +22,12 @@ function composeFetch(url, method, body) {
     if (method === 'GET') {
         return fetch(url);
     } else {
+        console.log(url);
+        console.log(JSON.stringify(body, null, 3));
         return fetch(url, 
             { 
                 method: method, 
-                body: body
+                body: JSON.stringify(body)
             });
     }
 }

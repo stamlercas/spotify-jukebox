@@ -8,6 +8,14 @@ class TrackListItem extends Component {
         this.state = {
             showModal: false
         }
+        this.toggleModal = this.toggleModal.bind(this);
+    }
+
+    toggleModal() {
+        this.setState({
+            showModal: !this.state.showModal
+        });
+        console.log('yep');
     }
 
     render() {
@@ -16,11 +24,10 @@ class TrackListItem extends Component {
         let trackName = track.name.length > trackNameMaxSize ? track.name.substring(0, trackNameMaxSize) + '...' : track.name;
         return (
             <li class="list-group-item">
-                <PlaySongModal track={this.props.track}/>
                 <div class="row">
                     <div class="col-2 justify-content-center align-self-center">
                         <span>
-                            <i class="bi bi-play play-icon" data-toggle="modal" data-target={'#' + track.id + '-modal'}></i>
+                            <i class="bi bi-play play-icon" data-toggle="modal" onClick={this.toggleModal}></i>
                         </span>
                     </div>
                     <div class="col-8 justify-content-center align-self-center">
@@ -28,6 +35,7 @@ class TrackListItem extends Component {
                             <div>{formatArtists(track.artists)}</div>
                     </div>
                 </div>
+                <PlaySongModal track={this.props.track} show={this.state.showModal} close={this.toggleModal}/>
             </li>
         );
     }
