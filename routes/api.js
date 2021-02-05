@@ -14,6 +14,8 @@ var spotifyApi = new SpotifyWebApi({
   redirectUri: ''
 });
 
+var firstSongQueued = true;
+
 /**
  * Router level middleware to detect that authorization has been made to use spotify
  */
@@ -56,6 +58,7 @@ router.get('/search', function(req, res, next) {
   if (!req.query.q || req.query.q == '') {
     res.statusCode = 406;
     res.json({ message: "No query found." });
+    return;
   }
 
   let query = req.query.q;
@@ -67,6 +70,41 @@ router.get('/search', function(req, res, next) {
     .then(result => response.tracks = result.body.tracks)
     .then(() => res.send.bind(res.send(response)))
     .catch(error => next(error));
+});
+
+/**
+ * Adds a track to the queue.
+ * Post body must have uri with link to track.
+ */
+router.post('/queue', function(req, res, next) {
+  if (!req.body.uri || req.body.uri == '') {
+    res.statusCode = 406;
+    res.json({ message: "No query found." });
+    return;
+  }
+
+  let uri = req.body.uri;
+  spotifyApi.addToQueue(uri)
+    .then(result => {
+      if (firstSongQueued) { // do some more setup, skip to next (which is the one just queued) and play
+        spotifyApi.skipToNext().then(() => spotifyApi.play());
+        firstSongQueued = false;
+      }
+    })
+    .then(result => {  // success send back 204 because no content needs to be sent
+      res.statusCode = 204;
+      res.end();
+    }).catch(error => {
+      console.log(error);
+      switch(error.body.error.status) {
+        case 404:
+          console.log('No active device found.');
+          break;
+      }
+      next(error);
+    });
+
+  
 });
 
 /**
@@ -87,6 +125,9 @@ router.get('/setAccessToken', function (req, res) {
       // Set the access token on the API object to use it in later calls
       spotifyApi.setAccessToken(data.body['access_token']);
       spotifyApi.setRefreshToken(data.body['refresh_token']);
+
+      // response does not depend on the next calls so can call them while response is redirected
+      spotifyApi.pause();
 
       res.redirect(req.protocol + '://' + req.get('host') + '/');
     },

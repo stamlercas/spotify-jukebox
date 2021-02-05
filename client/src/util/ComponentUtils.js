@@ -26,7 +26,11 @@ function composeFetch(url, method, body) {
         console.log(JSON.stringify(body, null, 3));
         return fetch(url, 
             { 
-                method: method, 
+                method: method,
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify(body)
             });
     }

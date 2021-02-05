@@ -15,7 +15,7 @@ class PlaySongModal extends Component {
 
     playSong() {
         fetchSpotifyData('/api/queue', 'POST', {
-            href: this.props.track.href,
+            uri: this.props.track.uri,
         });
         this.props.close();
     }
