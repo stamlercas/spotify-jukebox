@@ -3,11 +3,44 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var cors = require('cors');
+var http = require('http');
+var SpotifyPlayer = require('./player/SpotifyPlayer.js');
+var spotifyPlayer = new SpotifyPlayer();
+
+// socket.io stuff
+let port = 3001;
+const server = http.createServer(app);
+const io = require("socket.io")(server, {
+  cors: {
+    origin: "*"
+  }
+});
+server.listen(port, () => console.log(`Listening on port ${port}`));
+
+// this should be really defined in the app not here..
+io.on("connection", (socket) => {
+  let interval;
+  console.log("New client connected");
+  interval = setInterval(() => getNowPlayingAndEmit(socket), 1000);
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+    clearInterval(interval);
+  });
+});
+
+const getNowPlayingAndEmit = socket => {
+  if (spotifyPlayer.getSpotifyApi().getAccessToken() != undefined) {
+  spotifyPlayer.getSpotifyApi().getMyCurrentPlayingTrack()
+    .then(result => socket.emit("NowPlaying", JSON.stringify(result)))
+  }
+};
+
+// continue with app setup stuff
+var app = express();
 
 var apiRouter = require('./routes/api');
 
-var app = express();
+app.set('spotifyPlayer', spotifyPlayer);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -18,7 +51,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors());
 
 app.use('/api', apiRouter);
 

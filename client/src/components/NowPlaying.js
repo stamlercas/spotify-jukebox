@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import TrackDisplay from './TrackDisplay.js';
 import ServerApiClient from '../client/ServerApiClient.js';
 import AvailableDeviceModal from "./AvailableDeviceModal.js";
+import socketIOClient from "socket.io-client";
+import { properties } from '../properties.js';
 
 const queryStringParser = require('query-string');
 
@@ -28,7 +30,6 @@ class NowPlaying extends Component {
         this.setState({
             showModal: !this.state.showModal
         });
-        console.log('toggle');
     }
 
     componentDidMount() {
@@ -43,6 +44,14 @@ class NowPlaying extends Component {
                 playerState: status == 204 ? PlayerState.Not_Playing : PlayerState.Playing
             });
         });
+        const socket = socketIOClient(properties.serverUrl + ":3001");
+        socket.on("NowPlaying", response => {
+            let data = JSON.parse(response);
+            this.setState({
+                data: data.body,
+                playerState: data.statusCode == 204 ? PlayerState.Not_Playing : PlayerState.Playing
+            });
+          });
     }
 
     /**

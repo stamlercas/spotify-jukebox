@@ -1,35 +1,18 @@
 var express = require('express');
 var router = express.Router();
 
-var SpotifyWebApi = require('spotify-web-api-node');
-
-var scopes = [
-  'user-modify-playback-state',
-  'user-read-playback-state'
-];
-
-var spotifyApi = new SpotifyWebApi({
-  clientId: 'd143076b396b41d5a9b0b8cc10f7ea7c',
-  clientSecret: 'bc3f6d91473f46ada5d6749d3be495a3',
-  redirectUri: ''
-});
-
-var firstSongQueued = true;
-
-var deviceId = null;
-
 /**
  * Router level middleware to detect that authorization has been made to use spotify
  */
 router.use(function(req, res, next) {
-  if (spotifyApi.getAccessToken() == undefined && !req.query.code) {
+  if (req.app.get('spotifyPlayer').getSpotifyApi().getAccessToken() == undefined && !req.query.code) {
     let message = 'No access token found. Redirect to authorization url.';
     console.log(message);
-    spotifyApi.setRedirectURI(req.protocol + '://' + req.get('host') + '/api/setAccessToken');
+    req.app.get('spotifyPlayer').getSpotifyApi().setRedirectURI(req.protocol + '://' + req.get('host') + '/api/setAccessToken');
     // don't redirect, but instruct the client to redirect.  This is an asynchronous call and will only redirect this call not the browser, which is what we want to redirect
     res.json({
       message: message,
-      redirectUrl: spotifyApi.createAuthorizeURL(scopes, 'setup')
+      redirectUrl: req.app.get('spotifyPlayer').getSpotifyApi().createAuthorizeURL(req.app.get('spotifyPlayer').getScopes(), 'setup')
     });
   } else {
     next();
@@ -47,7 +30,7 @@ router.get(['/app', '/app/*'], function(req, res) {
   * Get currently playing track
   */
 router.get('/nowplaying', function(req, res, next) {
-  spotifyApi.getMyCurrentPlayingTrack()
+  req.app.get('spotifyPlayer').getSpotifyApi().getMyCurrentPlayingTrack()
     .then(result => res.send.bind(res.send(result)))
     .catch(error => next(error));
 });
@@ -66,9 +49,9 @@ router.get('/search', function(req, res, next) {
   let query = req.query.q;
   let response = {};
 
-  spotifyApi.searchArtists(query, {limit: 5})
+  req.app.get('spotifyPlayer').getSpotifyApi().searchArtists(query, {limit: 5})
     .then(result => response.artists = result.body.artists)
-    .then(() => spotifyApi.searchTracks(query, {limit: 10}))
+    .then(() => req.app.get('spotifyPlayer').getSpotifyApi().searchTracks(query, {limit: 10}))
     .then(result => response.tracks = result.body.tracks)
     .then(() => res.send.bind(res.send(response)))
     .catch(error => next(error));
@@ -86,11 +69,11 @@ router.post('/queue', function(req, res, next) {
   }
 
   let uri = req.body.uri;
-  spotifyApi.addToQueue(uri, { device_id: deviceId })
+  req.app.get('spotifyPlayer').getSpotifyApi().addToQueue(uri, { device_id: req.app.get('spotifyPlayer').getDeviceId() })
     .then(result => {
-      if (firstSongQueued) { // do some more setup, skip to next (which is the one just queued) and play from selected available device
-        spotifyApi.skipToNext(); // this should automatically start playing
-        firstSongQueued = false;
+      if (req.app.get('spotifyPlayer').getIsFirstSongQueued()) { // do some more setup, skip to next (which is the one just queued) and play from selected available device
+        req.app.get('spotifyPlayer').getSpotifyApi().skipToNext(); // this should automatically start playing
+        req.app.get('spotifyPlayer').setIsFirstSongQueued(false);
       }
     })
     .then(result => {  // success send back 204 because no content needs to be sent
@@ -110,7 +93,7 @@ router.post('/queue', function(req, res, next) {
  * Get available devices.
  */
 router.get('/devices', function(req, res, next) {
-  spotifyApi.getMyDevices()
+  req.app.get('spotifyPlayer').getSpotifyApi().getMyDevices()
     .then(result => res.send.bind.bind(res.send(result.body.devices)))
     .catch(error => next(error));
 });
@@ -124,9 +107,9 @@ router.post('/devices', function(req, res, next) {
     res.json({ message: "No query found." });
     return;
   }
-
-  deviceId = req.body.deviceId;
-  spotifyApi.transferMyPlayback([deviceId]).then(res => console.log('Set device: ' + deviceId));
+  let deviceId = req.body.deviceId;
+  req.app.get('spotifyPlayer').setDeviceId(deviceId);
+  req.app.get('spotifyPlayer').getSpotifyApi().transferMyPlayback([deviceId]).then(res => console.log('Set device: ' + deviceId));
 
   res.statusCode = 204;
   res.end();
@@ -137,7 +120,7 @@ router.post('/devices', function(req, res, next) {
  * Once done, redirect back to home page.
  */
 router.get('/setAccessToken', function(req, res) {
-  spotifyApi.authorizationCodeGrant(req.query.code).then(
+  req.app.get('spotifyPlayer').getSpotifyApi().authorizationCodeGrant(req.query.code).then(
     function(data) {
       // hide token values
       let maskString = string => string.substring(0, 32) + 
@@ -148,11 +131,11 @@ router.get('/setAccessToken', function(req, res) {
       console.log('The refresh token is ' + maskString(data.body['refresh_token']));
   
       // Set the access token on the API object to use it in later calls
-      spotifyApi.setAccessToken(data.body['access_token']);
-      spotifyApi.setRefreshToken(data.body['refresh_token']);
+      req.app.get('spotifyPlayer').getSpotifyApi().setAccessToken(data.body['access_token']);
+      req.app.get('spotifyPlayer').getSpotifyApi().setRefreshToken(data.body['refresh_token']);
 
       // response does not depend on the next calls so can call them while response is redirected
-      spotifyApi.pause();
+      req.app.get('spotifyPlayer').getSpotifyApi().pause();
 
       res.redirect(req.protocol + '://' + req.get('host') + '/?activation_success=true');
     },
@@ -160,5 +143,6 @@ router.get('/setAccessToken', function(req, res) {
       console.log('Something went wrong!', err);
     });
 });
+
 
 module.exports = router;
