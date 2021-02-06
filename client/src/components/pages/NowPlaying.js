@@ -19,7 +19,8 @@ class NowPlaying extends Component {
         this.state = {
             data: {},
             playerState: PlayerState.Loading,
-            showModal: false
+            showModal: false,
+            showTrackQueuedAlert: false
         }
 
         this.toggleModal = this.toggleModal.bind(this);
@@ -36,6 +37,9 @@ class NowPlaying extends Component {
         let queryParameters = queryStringParser.parse(this.props.location.search);
         if (queryParameters.activation_success) {   // server side was just activated, so prompt to select available devices
             this.toggleModal();
+        }
+        if (queryParameters.track_queued) {
+            this.setState({showTrackQueuedAlert: true});
         }
         ServerApiClient.getNowPlaying().then(res => {
             let status = res.statusCode;
@@ -73,6 +77,14 @@ class NowPlaying extends Component {
     render() {
         return (
             <div>
+                {this.state.showTrackQueuedAlert && 
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        Track was added to the queue successfully!
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                }
                 {this.getDisplay()}
                 <AvailableDeviceModal show={this.state.showModal} close={this.toggleModal} />
             </div>
