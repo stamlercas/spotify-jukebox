@@ -28,10 +28,11 @@ io.on("connection", (socket) => {
 });
 
 const getNowPlayingAndEmit = socket => {
+  // need to have set access token before making any spotify call
   if (spotifyPlayer.getSpotifyApi().getAccessToken() != undefined) {
-    spotifyPlayer.getSpotifyApi().getMyCurrentPlayingTrack()
-      .then(result => socket.emit("NowPlaying", JSON.stringify(result)))
-      .catch(error => "Error in websocket.");
+  spotifyPlayer.getSpotifyApi().getMyCurrentPlayingTrack()
+    .then(result => socket.emit("NowPlaying", JSON.stringify(result)))
+    .catch(error => console.log('Error while retrieving now playing info in socket.io'))
   }
 };
 
@@ -46,7 +47,7 @@ app.set('spotifyPlayer', spotifyPlayer);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-app.use(logger('dev'));
+app.use(logger('short'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
