@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import NowPlaying from './pages/NowPlaying';
 import Search from './pages/Search';
+import AlbumPage from './pages/AlbumPage';
 import ArtistPage from './pages/ArtistPage';
 
 class App extends Component {
@@ -15,6 +16,7 @@ class App extends Component {
         <Switch>
           <Route path="/search" component={Search}/>
           <Route path="/artist/:id" component={ArtistPage} />
+          <Route path="/album/:id" component={AlbumPage} />
           <Route path="/" component={NowPlaying}/>
         </Switch>
       </BrowserRouter>

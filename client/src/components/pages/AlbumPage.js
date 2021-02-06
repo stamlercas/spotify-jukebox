@@ -1,15 +1,14 @@
 import React, { Component } from "react";
 import TrackList from '../TrackList';
 import ServerApiClient from '../../client/ServerApiClient';
-import AlbumList from "../AlbumList";
 
 const PageState = {
     Loading: 'Loading...', 
-    Not_Found: 'Artist was not found.', 
+    Not_Found: 'Album was not found.', 
     Success: 'Success'
 };
 
-class ArtistPage extends Component {
+class AlbumPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -20,7 +19,7 @@ class ArtistPage extends Component {
 
     componentDidMount() {
         let id = this.props.match.params.id;
-        ServerApiClient.getArtist(id).then(res => 
+        ServerApiClient.getAlbum(id).then(res => 
             this.setState({
                 data: res,
                 pageState: PageState.Success
@@ -33,27 +32,30 @@ class ArtistPage extends Component {
     getDisplay() {
         switch(this.state.pageState) {
             case PageState.Success:
-                let artist = this.state.data.artist;
-                let topTracks = this.state.data.top_tracks.slice(0, 5);
-                let albums = this.state.data.albums.items.filter(album => album.album_type != 'single');
+                let album = this.state.data;
+                let tracks = this.state.data.tracks.items.map(track => {
+                    track.album = {};
+                    track.album.images = album.images;
+                    track.album.name = album.name;
+                    return track;
+                });
                 return (
                     <div>
                         <div class="row">
                             <div class="col-3 justify-content-center align-self-center">
-                                {artist.images[artist.images.length - 1] !== undefined &&
+                                {album.images[album.images.length - 1] !== undefined &&
                                 <span>
-                                    <img src={artist.images[artist.images.length - 1].url} class="img-fluid"/>
+                                    <img src={album.images[album.images.length - 1].url} class="img-fluid"/>
                                 </span>
                                 }
                             </div>
                             <div class="col-9 justify-content-center align-self-center">
-                                <h2>{artist.name}</h2>
+                                <h2>{album.name}</h2>
+                                <div>{album.release_date.substring(0, 4)}</div>
                             </div>
                         </div>
                         <br />
-                        <TrackList tracks={topTracks}/>
-                        <br />
-                        <AlbumList albums={albums}/>
+                        <TrackList tracks={tracks}/>
                     </div>
                 );
             default:
@@ -72,4 +74,4 @@ class ArtistPage extends Component {
     }
 }
 
-export default ArtistPage;
+export default AlbumPage;

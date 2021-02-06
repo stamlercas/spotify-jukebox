@@ -74,6 +74,16 @@ router.get('/artist/:id', function(req, res, next) {
 });
 
 /**
+ * Get an album from the id.
+ */
+router.get('/album/:id', function(req, res, next) {
+  let id = req.params.id;
+  req.app.get('spotifyPlayer').getSpotifyApi().getAlbum(id)
+    .then(result => res.send.bind(res.send(result.body)))
+    .catch(error => next(error));
+});
+
+/**
  * Adds a track to the queue.
  * Post body must have uri with link to track.
  */

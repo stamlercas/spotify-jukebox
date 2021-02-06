@@ -21,6 +21,12 @@ ServerApiClient.prototype.getAvailableDevices = () => fetchData('/api/devices');
 ServerApiClient.prototype.getArtist = (id) => fetchData('/api/artist/' + id);
 
 /**
+ * Get album from id.
+ * @param {string} id 
+ */
+ServerApiClient.prototype.getAlbum = (id) => fetchData('/api/album/' + id);
+
+/**
  * Search for artists and tracks using the given query.
  * @param {string} query 
  */
