@@ -17,7 +17,6 @@ const io = require("socket.io")(server, {
 });
 server.listen(port, () => console.log(`Listening on port ${port}`));
 
-// this should be really defined in the app not here..
 io.on("connection", (socket) => {
   let interval;
   console.log("New client connected");
@@ -30,8 +29,9 @@ io.on("connection", (socket) => {
 
 const getNowPlayingAndEmit = socket => {
   if (spotifyPlayer.getSpotifyApi().getAccessToken() != undefined) {
-  spotifyPlayer.getSpotifyApi().getMyCurrentPlayingTrack()
-    .then(result => socket.emit("NowPlaying", JSON.stringify(result)))
+    spotifyPlayer.getSpotifyApi().getMyCurrentPlayingTrack()
+      .then(result => socket.emit("NowPlaying", JSON.stringify(result)))
+      .catch(error => "Error in websocket.");
   }
 };
 

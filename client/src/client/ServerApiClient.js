@@ -15,6 +15,12 @@ ServerApiClient.prototype.getNowPlaying = () => fetchData("/api/nowplaying");
 ServerApiClient.prototype.getAvailableDevices = () => fetchData('/api/devices');
 
 /**
+ * Get artist from id.
+ * @param {string} id 
+ */
+ServerApiClient.prototype.getAvailableDevices = (id) => fetchData('/api/artist/' + id);
+
+/**
  * Search for artists and tracks using the given query.
  * @param {string} query 
  */

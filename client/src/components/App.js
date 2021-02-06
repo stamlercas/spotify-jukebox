@@ -4,8 +4,9 @@ import {
   Route,
   Switch
 } from "react-router-dom";
-import NowPlaying from './NowPlaying';
-import Search from './Search';
+import NowPlaying from './pages/NowPlaying';
+import Search from './pages/Search';
+import ArtistPage from './pages/ArtistPage';
 
 class App extends Component {
   render() {
@@ -13,6 +14,7 @@ class App extends Component {
       <BrowserRouter>
         <Switch>
           <Route path="/search" component={Search}/>
+          <Route path="/artist/:id" component={ArtistPage} />
           <Route path="/" component={NowPlaying}/>
         </Switch>
       </BrowserRouter>

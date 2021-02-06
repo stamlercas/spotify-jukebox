@@ -22,7 +22,7 @@ class TrackListItem extends Component {
         let trackNameMaxSize = 40;
         let trackName = track.name.length > trackNameMaxSize ? track.name.substring(0, trackNameMaxSize) + '...' : track.name;
         return (
-            <li class="list-group-item">
+            <a class="list-group-item list-group-item-action">
                 <div class="row">
                     <div class="col-2 justify-content-center align-self-center">
                         <span>
@@ -35,7 +35,7 @@ class TrackListItem extends Component {
                     </div>
                 </div>
                 <PlaySongModal track={this.props.track} show={this.state.showModal} close={this.toggleModal}/>
-            </li>
+            </a>
         );
     }
 }

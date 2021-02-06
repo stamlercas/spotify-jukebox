@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import ArtistListItem from "./ArtistListItem.js";
-import TrackListItem from "./TrackListItem.js";
-import ServerApiClient from '../client/ServerApiClient.js';
+import ArtistListItem from "../ArtistListItem.js";
+import TrackListItem from "../TrackListItem.js";
+import ServerApiClient from '../../client/ServerApiClient.js';
 
 const queryStringParser = require('query-string');
 
@@ -50,18 +50,18 @@ class Search extends Component {
                         {this.state.data.artists.items.length > 0 &&
                         <div>
                             <h3>Artists</h3>
-                            <ul class="list-group list-group-flush">
+                            <div class="list-group-flush">
                                 {this.state.data.artists.items.map(artist => <ArtistListItem artist={artist}/>)}
-                            </ul>
+                            </div>
                             <br />
                         </div>
                         }
                         {this.state.data.tracks.items.length > 0 &&
                         <div>
                             <h3>Tracks</h3>
-                            <ul class="list-group list-group-flush">
+                            <div class="list-group-flush">
                                 {this.state.data.tracks.items.map(track => <TrackListItem track={track}/>)}
-                            </ul>
+                            </div>
                         </div>
                         }
                     </div>

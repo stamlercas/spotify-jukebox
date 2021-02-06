@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import TrackDisplay from './TrackDisplay.js';
-import ServerApiClient from '../client/ServerApiClient.js';
-import AvailableDeviceModal from "./AvailableDeviceModal.js";
+import TrackDisplay from '../TrackDisplay.js';
+import ServerApiClient from '../../client/ServerApiClient.js';
+import AvailableDeviceModal from "../AvailableDeviceModal.js";
 import socketIOClient from "socket.io-client";
-import { properties } from '../properties.js';
+import { properties } from '../../properties.js';
 
 const queryStringParser = require('query-string');
 

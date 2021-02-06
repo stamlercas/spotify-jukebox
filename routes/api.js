@@ -57,6 +57,11 @@ router.get('/search', function(req, res, next) {
     .catch(error => next(error));
 });
 
+router.get('/artist/:id', function(req, res, next) {
+  req.app.get('spotifyPlayer').getSpotifyApi().getArtist(req.params.id)
+    .then(result => res.send(result));
+});
+
 /**
  * Adds a track to the queue.
  * Post body must have uri with link to track.

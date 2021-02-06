@@ -8,7 +8,7 @@ class ArtistListItem extends Component {
     render() {
         let artist = this.props.artist;
         return (
-            <li class="list-group-item">
+            <a href={"/artist/" + artist.id} class="list-group-item list-group-item-action">
                 <div class="row">
                     <div class="col-3">
                         {artist.images[artist.images.length - 1] !== undefined &&
@@ -21,7 +21,7 @@ class ArtistListItem extends Component {
                             {artist.name}
                     </div>
                 </div>
-            </li>
+            </a>
         );
     }
 }
