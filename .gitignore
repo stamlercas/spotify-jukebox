@@ -119,3 +119,4 @@ client/node_modules/
 client/build/
 public/
 !client/public
+client/src/properties.js
