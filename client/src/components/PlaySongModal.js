@@ -14,7 +14,10 @@ class PlaySongModal extends Component {
     }
 
     playSong() {
-        ServerApiClient.addToQueue(this.props.track.uri).then(() => this.props.close());
+        ServerApiClient.addToQueue(this.props.track.uri).then(() => {
+            this.props.close();
+            window.location.href = '/';
+        });
     }
 
     render() {
@@ -22,6 +25,7 @@ class PlaySongModal extends Component {
         return (
             <Modal show={this.props.show} onHide={this.props.close} aria-labelledby="contained-modal-title-vcenter" centered>
                 <Modal.Header closeButton>
+                    <Modal.Title>Play this song?</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <TrackDisplay track={this.props.track} />

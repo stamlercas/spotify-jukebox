@@ -57,9 +57,20 @@ router.get('/search', function(req, res, next) {
     .catch(error => next(error));
 });
 
+/**
+ * Get an artist's info, top tracks, and albums.
+ */
 router.get('/artist/:id', function(req, res, next) {
-  req.app.get('spotifyPlayer').getSpotifyApi().getArtist(req.params.id)
-    .then(result => res.send(result));
+  let id = req.params.id;
+  let response = {};
+  req.app.get('spotifyPlayer').getSpotifyApi().getArtist(id)
+    .then(result => response.artist = result.body)
+    .then(() => req.app.get('spotifyPlayer').getSpotifyApi().getArtistTopTracks(id, 'US'))
+    .then(result => response.top_tracks = result.body.tracks)
+    .then(() => req.app.get('spotifyPlayer').getSpotifyApi().getArtistAlbums(id, {market: 'US'}))
+    .then(result => response.albums = result.body)
+    .then(() => res.send.bind(res.send(response)))
+    .catch(error => next(error));
 });
 
 /**
@@ -99,7 +110,7 @@ router.post('/queue', function(req, res, next) {
  */
 router.get('/devices', function(req, res, next) {
   req.app.get('spotifyPlayer').getSpotifyApi().getMyDevices()
-    .then(result => res.send.bind.bind(res.send(result.body.devices)))
+    .then(result => res.send.bind(res.send(result.body.devices)))
     .catch(error => next(error));
 });
 

@@ -29,7 +29,7 @@ class TrackListItem extends Component {
                             <i class="bi bi-play play-icon" data-toggle="modal" onClick={this.toggleModal}></i>
                         </span>
                     </div>
-                    <div class="col-8 justify-content-center align-self-center">
+                    <div class="col-10 justify-content-center align-self-center">
                             <div class="font-weight-bold">{trackName}</div>
                             <div>{formatArtists(track.artists)}</div>
                     </div>

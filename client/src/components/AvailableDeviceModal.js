@@ -18,17 +18,23 @@ class AvailableDeviceModal extends Component {
             data: {}
         }
 
-        this.deviceId = '';
+        this.deviceId = null;
 
         this.getBody = this.getBody.bind(this);
+        this.getDevices = this.getDevices.bind(this);
         this.selectDevice = this.selectDevice.bind(this);
         this.deviceChangeHandler = this.deviceChangeHandler.bind(this);
     }
 
     componentDidMount() {
-       ServerApiClient.getAvailableDevices().then(res => {
-            // this should almost never happen
-            if (this.state.data === undefined || this.state.data.length == 0) {
+       this.getDevices();
+    }
+
+    getDevices() {
+        this.setState({ availableDeviceModalState: AvailableDeviceModalState.Loading });
+        ServerApiClient.getAvailableDevices().then(res => {
+            // check for no data
+            if (res === undefined || res.length == 0 || Object.keys(res).length === 0) {
                 this.setState({
                     availableDeviceModalState: AvailableDeviceModalState.No_Available_Devices
                 })
@@ -43,7 +49,9 @@ class AvailableDeviceModal extends Component {
     }
 
     selectDevice() {
-        ServerApiClient.setAvailableDevice(this.deviceId).then(() => this.props.close());
+        if (this.deviceId != null) {
+            ServerApiClient.setAvailableDevice(this.deviceId).then(() => this.props.close());
+        } // TODO: set alert or something notifying user that no devices was selected
     }
 
     deviceChangeHandler(e) {
@@ -80,6 +88,9 @@ class AvailableDeviceModal extends Component {
                     {this.getBody()}
                 </Modal.Body>
                 <Modal.Footer>
+                    <Button variant="dark" onClick={this.getDevices}>
+                    Refresh Devices
+                    </Button>
                     <Button variant="secondary" onClick={this.props.close}>
                     Close
                     </Button>

@@ -10,7 +10,7 @@ class ArtistListItem extends Component {
         return (
             <a href={"/artist/" + artist.id} class="list-group-item list-group-item-action">
                 <div class="row">
-                    <div class="col-3">
+                    <div class="col-3 justify-content-center align-self-center">
                         {artist.images[artist.images.length - 1] !== undefined &&
                             <span>
                                 <img src={artist.images[artist.images.length - 1].url} class="img-fluid list-img"/>

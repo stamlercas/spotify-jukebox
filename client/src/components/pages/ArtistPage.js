@@ -1,5 +1,7 @@
 import React, { Component } from "react";
-import ServerApiClient from '../../client/ServerApiClient.js';
+import TrackList from '../TrackList';
+import ServerApiClient from '../../client/ServerApiClient';
+import AlbumList from "../AlbumList";
 
 const PageState = {
     Loading: 'Loading...', 
@@ -24,9 +26,10 @@ class ArtistPage extends Component {
     }
 
     componentDidMount() {
-        ServerApiClient.getNowPlaying().then(res => 
+        let id = this.props.match.params.id;
+        ServerApiClient.getArtist(id).then(res => 
             this.setState({
-                data: res.body,
+                data: res,
                 pageState: PageState.Success
             }));
     }
@@ -37,9 +40,27 @@ class ArtistPage extends Component {
     getDisplay() {
         switch(this.state.pageState) {
             case PageState.Success:
+                let artist = this.state.data.artist;
+                let topTracks = this.state.data.top_tracks.slice(0, 5);
+                let albums = this.state.data.albums.items.filter(album => album.album_type != 'single');
                 return (
                     <div>
-                        {JSON.stringify(this.state.data, null, 3)}
+                        <div class="row">
+                            <div class="col-3 justify-content-center align-self-center">
+                                {artist.images[artist.images.length - 1] !== undefined &&
+                                <span>
+                                    <img src={artist.images[artist.images.length - 1].url} class="img-fluid"/>
+                                </span>
+                                }
+                            </div>
+                            <div class="col-9 justify-content-center align-self-center">
+                                <h2>{artist.name}</h2>
+                            </div>
+                        </div>
+                        <br />
+                        <TrackList tracks={topTracks}/>
+                        <br />
+                        <AlbumList albums={albums}/>
                     </div>
                 );
             default:
