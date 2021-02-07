@@ -90,19 +90,24 @@ router.get('/album/:id', function(req, res, next) {
  * Post body must have uri with link to track.
  */
 router.post('/queue', function(req, res, next) {
-  if (!req.body.uri || req.body.uri == '') {
+  if (!req.body.track || req.body.track == '') {
     res.statusCode = 406;
     res.json({ message: "No query found." });
     return;
   }
 
-  let uri = req.body.uri;
+  let uri = req.body.track.uri;
   req.app.get('spotifyPlayer').getSpotifyApi().addToQueue(uri, { device_id: req.app.get('spotifyPlayer').getDeviceId() })
     .then(result => {
       if (req.app.get('spotifyPlayer').getIsFirstSongQueued()) { // do some more setup, skip to next (which is the one just queued) and play from selected available device
         req.app.get('spotifyPlayer').getSpotifyApi().skipToNext(); // this should automatically start playing
         req.app.get('spotifyPlayer').setIsFirstSongQueued(false);
       }
+
+      // log the song queued
+      let ip = (req.headers['x-forwarded-for'] || req.connection.remoteAddress).split(':').pop();
+      console.log(req.body.track.name + ' - ' + req.body.track.artists.map(artist => artist.name).join(', ') 
+        + ' queued by ' + ip);
     })
     .then(result => {  // success send back 204 because no content needs to be sent
       res.statusCode = 204;
