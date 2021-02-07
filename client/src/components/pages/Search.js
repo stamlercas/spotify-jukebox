@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import AlbumList from '../AlbumList';
 import ArtistList from "../ArtistList";
 import TrackList from "../TrackList";
 import ServerApiClient from '../../client/ServerApiClient.js';
@@ -50,6 +51,12 @@ class Search extends Component {
                         {this.state.data.artists.items.length > 0 &&
                         <div>
                             <ArtistList artists={this.state.data.artists.items}/>
+                            <br />
+                        </div>
+                        }
+                        {this.state.data.albums.items.length > 0 &&
+                        <div>
+                            <AlbumList albums={this.state.data.albums.items} showArtist={true}/>
                             <br />
                         </div>
                         }

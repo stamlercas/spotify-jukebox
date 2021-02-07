@@ -35,7 +35,7 @@ class ArtistPage extends Component {
             case PageState.Success:
                 let artist = this.state.data.artist;
                 let topTracks = this.state.data.top_tracks.slice(0, 5);
-                let albums = this.state.data.albums.items.filter(album => album.album_type != 'single');
+                let albums = this.state.data.albums.items;//.filter(album => album.album_type != 'single');
                 return (
                     <div>
                         <div class="row">

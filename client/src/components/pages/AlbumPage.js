@@ -37,6 +37,7 @@ class AlbumPage extends Component {
                     track.album = {};
                     track.album.images = album.images;
                     track.album.name = album.name;
+                    track.album.artists = album.artists;
                     return track;
                 });
                 return (
@@ -51,7 +52,7 @@ class AlbumPage extends Component {
                             </div>
                             <div class="col-9 justify-content-center align-self-center">
                                 <h2>{album.name}</h2>
-                                <div>{album.release_date.substring(0, 4)}</div>
+                                <div>{album.artists[0].name} <i class="bi bi-dot"></i> {album.release_date.substring(0, 4)}</div>
                             </div>
                         </div>
                         <br />

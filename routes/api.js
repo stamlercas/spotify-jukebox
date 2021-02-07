@@ -53,6 +53,8 @@ router.get('/search', function(req, res, next) {
     .then(result => response.artists = result.body.artists)
     .then(() => req.app.get('spotifyPlayer').getSpotifyApi().searchTracks(query, {limit: 10}))
     .then(result => response.tracks = result.body.tracks)
+    .then(() => req.app.get('spotifyPlayer').getSpotifyApi().searchAlbums(query,{limit: 5}))
+    .then(result => response.albums = result.body.albums)
     .then(() => res.send.bind(res.send(response)))
     .catch(error => next(error));
 });
@@ -67,7 +69,7 @@ router.get('/artist/:id', function(req, res, next) {
     .then(result => response.artist = result.body)
     .then(() => req.app.get('spotifyPlayer').getSpotifyApi().getArtistTopTracks(id, 'US'))
     .then(result => response.top_tracks = result.body.tracks)
-    .then(() => req.app.get('spotifyPlayer').getSpotifyApi().getArtistAlbums(id, {market: 'US'}))
+    .then(() => req.app.get('spotifyPlayer').getSpotifyApi().getArtistAlbums(id, {market: 'US', limit: 50}))  // 50 is max limit
     .then(result => response.albums = result.body)
     .then(() => res.send.bind(res.send(response)))
     .catch(error => next(error));

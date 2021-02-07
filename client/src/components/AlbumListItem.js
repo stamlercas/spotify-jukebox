@@ -1,8 +1,20 @@
 import React, { Component } from "react";
 
+/**
+ * Component to render an album list item.
+ * An optional prop of showArtist can be passed in as true to display the first artist credited on the album.
+ */
 class AlbumListItem extends Component {
     constructor(props) {
         super(props);
+
+        this.renderArtist = this.renderArtist.bind(this);
+    }
+
+    renderArtist() {
+        return (
+            <span>{this.props.album.artists[0].name} <i class="bi bi-dot"></i> </span> 
+        );
     }
 
     render() {
@@ -19,7 +31,9 @@ class AlbumListItem extends Component {
                     </div>
                     <div class="col-9 justify-content-center align-self-center">
                             <div>{album.name}</div>
-                            <div>{album.release_date.substring(0, 4)}</div>
+                            <div>{this.props.showArtist && 
+                                this.renderArtist()
+                            }{album.release_date.substring(0, 4)}</div>
                     </div>
                 </div>
             </a>
