@@ -20,7 +20,7 @@ npm run-script start
 ```
 
 ## How it Works
-On app startup, a spotify account will need to be used and until a user authorizes an account, every request will send a redirect url that will prompt the user to authorize their accoutn.
+On app startup, a spotify account will need to be used and until a user authorizes an account, every request will send a redirect url that will prompt the user to authorize their account.
 
 Once a user authorizes their account, an access token and refresh token will be used on the server to call Spotify's REST API. The user will be redirected to the home page and they will select the device they intend to use.
 
