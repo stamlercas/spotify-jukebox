@@ -34,11 +34,11 @@ ServerApiClient.prototype.search = (query) => fetchData("/api/search/?q=" + quer
 
 /**
  * Add track to queue using uri.
- * @param {string} uri 
+ * @param {Track} uri 
  */
-ServerApiClient.prototype.addToQueue = (uri) =>
+ServerApiClient.prototype.addToQueue = (track) =>
     fetchData('/api/queue', 'POST', {
-        uri: uri
+        track: track
     });
 
 /**
