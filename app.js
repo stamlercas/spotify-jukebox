@@ -19,10 +19,11 @@ server.listen(port, () => console.log(`Listening on port ${port}`));
 
 io.on("connection", (socket) => {
   let interval;
-  console.log("New client connected");
+  let ip = socket.handshake.address;
+  console.log(`${ip} connected`);
   interval = setInterval(() => getNowPlayingAndEmit(socket), 1000);
   socket.on("disconnect", () => {
-    console.log("Client disconnected");
+    console.log(`${ip} disconnected`);
     clearInterval(interval);
   });
 });
