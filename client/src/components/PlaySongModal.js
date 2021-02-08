@@ -33,6 +33,9 @@ class PlaySongModal extends Component {
             // TODO: validate form
             canPlay = true;
         }
+        else {
+            canPlay = true;
+        }
 
         if (canPlay) {
             ServerApiClient.addToQueue(this.props.track).then(() => {
