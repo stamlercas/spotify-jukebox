@@ -7,7 +7,7 @@ class TrackDisplay extends Component {
         let albumUrl = this.props.track.album.images[0].url;
         let albumName = this.props.track.album.name;
         return (
-            <div>
+            <div id="track-display">
                 <div class="row text-center">
                     <div class="col-lg-2"></div>
                     <div class="col-lg-8">

@@ -4,6 +4,7 @@ import ServerApiClient from '../../client/ServerApiClient.js';
 import AvailableDeviceModal from "../AvailableDeviceModal.js";
 import socketIOClient from "socket.io-client";
 import { properties } from '../../properties.js';
+import Vibrant from 'node-vibrant';
 
 const queryStringParser = require('query-string');
 
@@ -25,6 +26,7 @@ class NowPlaying extends Component {
 
         this.toggleModal = this.toggleModal.bind(this);
         this.getDisplay = this.getDisplay.bind(this);
+        this.setNowPlayingSong = this.setNowPlayingSong.bind(this);
     }
 
     toggleModal() {
@@ -42,20 +44,33 @@ class NowPlaying extends Component {
             this.setState({showTrackQueuedAlert: true});
         }
         ServerApiClient.getNowPlaying().then(res => {
-            let status = res.statusCode;
-            this.setState({
-                data: res.body,
-                playerState: status == 204 ? PlayerState.Not_Playing : PlayerState.Playing
-            });
+            this.setNowPlayingSong(res);
         });
         const socket = socketIOClient(properties.serverUrl + ":3001");
         socket.on("NowPlaying", response => {
             let data = JSON.parse(response);
-            this.setState({
-                data: data.body,
-                playerState: data.statusCode == 204 ? PlayerState.Not_Playing : PlayerState.Playing
-            });
+            this.setNowPlayingSong(data);
           });
+    }
+
+    /**
+     * Set now playing song in state
+     * @param {*} data 
+     */
+    setNowPlayingSong(data) {
+        this.setState({
+            data: data.body,
+            playerState: data.statusCode == 204 ? PlayerState.Not_Playing : PlayerState.Playing
+        });
+        console.log(this.state.data);
+        if (this.state.playerState == PlayerState.Playing) {
+            let v = new Vibrant(this.state.data.item.album.images[0].url);
+            v.getPalette((err, palette) => {
+                document.getElementsByTagName('body')[0].style.backgroundAttachment = "fixed";
+                document.getElementsByTagName('body')[0].style.backgroundImage = "linear-gradient(" + palette.Vibrant.getHex() + ", " + palette.DarkVibrant.getHex() +")"; 
+                document.getElementById('track-display').style.color = palette.LightMuted.getHex();
+            });
+        }
     }
 
     /**
