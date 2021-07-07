@@ -170,6 +170,9 @@ router.get('/setAccessToken', function(req, res) {
       // response does not depend on the next calls so can call them while response is redirected
       req.app.get('spotifyPlayer').getSpotifyApi().pause().catch(error => console.log(error));
 
+      // start task here
+      req.app.get('spotifyPlayerRefreshTask').start();
+
       res.redirect(req.protocol + '://' + req.get('host') + '/?activation_success=true');
     },
     function(err) {

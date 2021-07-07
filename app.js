@@ -1,3 +1,7 @@
+/**
+ * Does application setup stuff. Like setting up socket.io, setting up routes, etc.
+ */
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -5,6 +9,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var http = require('http');
 var SpotifyPlayer = require('./player/SpotifyPlayer.js');
+var cron = require('node-cron');
 var spotifyPlayer = new SpotifyPlayer();
 
 // socket.io stuff
@@ -43,6 +48,21 @@ var app = express();
 var apiRouter = require('./routes/api');
 
 app.set('spotifyPlayer', spotifyPlayer);
+
+// set up task for refreshing access token every hour. Note this task needs to be started before it will do anything. This will happen whenever an access token is received
+var cronTask = cron.schedule('0 * * * *', () => {
+  spotifyPlayer.getSpotifyApi().refreshAccessToken().then(
+    (data) => {
+      console.log('The access token has been refreshed!');
+      // Save the access token so that it's used in future calls
+      spotifyPlayer.getSpotifyApi().setAccessToken(data.body['access_token']);
+    },
+    (err) => console.log('Could not refresh access token', err)
+  )
+}, {
+  scheduled: false
+});
+app.set('spotifyPlayerRefreshTask', cronTask);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
