@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Button, Modal }from 'react-bootstrap';
-import SignatureCanvas from 'react-signature-canvas'
+import SignatureFormInput from './SignatureFormInput.js';
 import TrackDisplay from './TrackDisplay.js';
 import ServerApiClient from '../client/ServerApiClient.js';
 
@@ -15,12 +15,11 @@ class PlaySongModal extends Component {
         this.state = {
             show: this.props.show,
             playSongModalState: PlaySongModalState.Play_Song,
-            songThreshold: 10 * 60 * 1000 // 10 minutes
+            songThreshold: 10 * 60 * 1000 // 10 minutes TODO: put this in properties
         }
 
         this.playSong = this.playSong.bind(this);
         this.getBody = this.getBody.bind(this);
-        this.getCanvasWidth = this.getCanvasWidth.bind(this);
         this.close = this.close.bind(this);
     }
 
@@ -31,7 +30,12 @@ class PlaySongModal extends Component {
             this.setState({ playSongModalState: PlaySongModalState.Confirm_Play });
         } else if (this.state.playSongModalState == PlaySongModalState.Confirm_Play) {
             // TODO: validate form
-            canPlay = true;
+            let form = document.getElementById("confirmation-form");
+            if (this.sigCanvas.validate() && form.checkValidity()) {
+                canPlay = true;
+            }
+
+            form.classList.add('was-validated');
         }
         else {
             canPlay = true;
@@ -43,14 +47,6 @@ class PlaySongModal extends Component {
                 window.location.href = '/?track_queued=true';
             });
         }
-    }
-
-    getCanvasWidth() {
-        let el = document.getElementById('empty-div');
-        if (el != null) {
-            return el.getBoundingClientRect().width;
-        }
-        return 0;
     }
 
     close() {
@@ -67,13 +63,16 @@ class PlaySongModal extends Component {
                 let date = new Date();
                 // todo: add clear signature option
                 return (
-                    <form id="confirmation-form">
+                    <form id="confirmation-form" novalidate>
                         <p>This song is more than {duration_min} minutes long. Please sign and confirm before playing.</p>
                         <br />
                         <div class="row">
                                 <div class="col-4">I, </div>
                                 <div class="col-8">
-                                    <input type="text" class="form-control input" id="name" required />
+                                    <input id="txt-input-name" type="text" class="form-control input" required />
+                                    <div class="invalid-feedback">
+                                        Please provide your name.
+                                    </div>
                                 </div>
                         </div>
                         <p>
@@ -81,14 +80,7 @@ class PlaySongModal extends Component {
                             agrees to sole responsibiltiy for all bitching that may occur as a result of this song playing. <b>Asshole</b> herewith agrees to sole liability 
                             for any injury to self or others as a result of this action.
                         </p>
-                        <div>
-                            <label for="signature">Signature</label>
-                            <SignatureCanvas ref={(ref) => { this.sigCanvas = ref }} 
-                                canvasProps={
-                                    {width: this.getCanvasWidth(), 
-                                    height: 120, 
-                                    className: 'sigCanvas'}}/>
-                        </div>
+                        <SignatureFormInput ref={(ref) => { this.sigCanvas = ref }} />
                         <div>
                             Date: {date.getMonth() + '/' + date.getDate() + '/' + date.getFullYear()}
                         </div>

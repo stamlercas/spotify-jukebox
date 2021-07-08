@@ -16,3 +16,17 @@
     margin-right:.15em;
     font-size:1.6rem;
 }
+
+/* Probably a better way to do this... */
+.sig-canvas {
+    border: 1px solid white;
+    border-radius:.25rem;
+}
+
+.was-validated .sig-canvas.is-invalid {
+    border-color: #dc3545
+}
+
+.was-validated  .sig-canvas.is-valid {
+    border-color: #28a745;
+}

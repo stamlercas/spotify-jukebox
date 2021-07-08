@@ -58,18 +58,24 @@ class NowPlaying extends Component {
      * @param {*} data 
      */
     setNowPlayingSong(data) {
-        this.setState({
-            data: data.body,
-            playerState: data.statusCode == 204 ? PlayerState.Not_Playing : PlayerState.Playing
-        });
-        console.log(this.state.data);
-        if (this.state.playerState == PlayerState.Playing) {
-            let v = new Vibrant(this.state.data.item.album.images[0].url);
-            v.getPalette((err, palette) => {
-                document.getElementsByTagName('body')[0].style.backgroundAttachment = "fixed";
-                document.getElementsByTagName('body')[0].style.backgroundImage = "linear-gradient(" + palette.Vibrant.getHex() + ", " + palette.DarkVibrant.getHex() +")"; 
-                document.getElementById('track-display').style.color = palette.LightMuted.getHex();
+        if (data.body.item != null) {
+            this.setState({
+                data: data.body,
+                playerState: data.statusCode == 204 ? PlayerState.Not_Playing : PlayerState.Playing
             });
+            console.log(this.state.data);
+            if (this.state.playerState == PlayerState.Playing) {
+                let v = new Vibrant(this.state.data.item.album.images[0].url);
+                v.getPalette((err, palette) => {
+                    document.getElementsByTagName('body')[0].style.backgroundAttachment = "fixed";
+                    document.getElementsByTagName('body')[0].style.backgroundImage = "linear-gradient(" + palette.Vibrant.getHex() + ", " + palette.DarkVibrant.getHex() +")"; 
+                    document.getElementsByClassName('track-display')[0].style.color = palette.LightMuted.getHex();
+                });
+            } else {
+                document.getElementsByTagName('body')[0].style.backgroundAttachment = "";
+                document.getElementsByTagName('body')[0].style.backgroundImage = ""; 
+                document.getElementsByClassName('track-display')[0].style.color = "";
+            }
         }
     }
 
@@ -100,7 +106,9 @@ class NowPlaying extends Component {
                         </button>
                     </div>
                 }
-                {this.getDisplay()}
+                <div class="track-display">
+                    {this.getDisplay()}
+                </div>
                 <AvailableDeviceModal show={this.state.showModal} close={this.toggleModal} />
             </div>
         )
