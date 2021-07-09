@@ -1,13 +1,15 @@
+import { properties } from '../properties.js';
+
 /**
  * Tracks a degree on a interval to create a swaying effect.
  */
 export class DegreeUpdater {
     constructor() {
-        this._degree = 0;
-        this._maxDegree = 22.5;
-        this._minDegree = 337.5;
-        this._direction = 1;
-        this._increment = .5;
+        this._degree = properties.degreeUpdater.degree;
+        this._maxDegree = properties.degreeUpdater.maxDegree;
+        this._minDegree = properties.degreeUpdater.minDegree;
+        this._direction = properties.degreeUpdater.direction;
+        this._increment = properties.degreeUpdater.increment;
         this._degreeUpdater = setInterval(() => {
             this._degree += (this._increment * this._direction);
             if (this._direction == 1 && this._degree >= 360) {
