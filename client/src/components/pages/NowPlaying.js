@@ -6,6 +6,7 @@ import socketIOClient from "socket.io-client";
 import { properties } from '../../properties.js';
 import Vibrant from 'node-vibrant';
 import ColorUtils from '../../util/ColorUtils.js';
+import DegreeUpdater from '../../util/DegreeUpdater.js';
 
 const queryStringParser = require('query-string');
 
@@ -51,7 +52,12 @@ class NowPlaying extends Component {
         socket.on("NowPlaying", response => {
             let data = JSON.parse(response);
             this.setNowPlayingSong(data);
-          });
+        });
+        this.degreeUpdater = new DegreeUpdater();
+    }
+
+    componentWillUnmount() {
+        this.degreeUpdater.stop();
     }
 
     /**
@@ -69,7 +75,8 @@ class NowPlaying extends Component {
                 let v = new Vibrant(this.state.data.item.album.images[0].url);
                 v.getPalette((err, palette) => {
                     document.getElementsByTagName('body')[0].style.backgroundAttachment = "fixed";
-                    document.getElementsByTagName('body')[0].style.backgroundImage = "linear-gradient(" + palette.Vibrant.getHex() + ", " + palette.DarkVibrant.getHex() +")"; 
+                    document.getElementsByTagName('body')[0].style.backgroundImage = "linear-gradient(" + this.degreeUpdater.getDegree() + "deg, "
+                            + palette.Vibrant.getHex() + ", " + palette.DarkVibrant.getHex() +")"; 
                     document.getElementsByTagName('body')[0].style.backgroundColor = palette.DarkVibrant.getHex();
                     document.getElementsByClassName('track-display')[0].style.color = ColorUtils.getSwatchWithMostContrast(palette.DarkVibrant, 
                         [palette.LightMuted, palette.DarkMuted, palette.LightVibrant, palette.Muted]).getHex();
