@@ -5,6 +5,7 @@ import AvailableDeviceModal from "../AvailableDeviceModal.js";
 import socketIOClient from "socket.io-client";
 import { properties } from '../../properties.js';
 import Vibrant from 'node-vibrant';
+import ColorUtils from '../../util/ColorUtils.js';
 
 const queryStringParser = require('query-string');
 
@@ -69,7 +70,14 @@ class NowPlaying extends Component {
                 v.getPalette((err, palette) => {
                     document.getElementsByTagName('body')[0].style.backgroundAttachment = "fixed";
                     document.getElementsByTagName('body')[0].style.backgroundImage = "linear-gradient(" + palette.Vibrant.getHex() + ", " + palette.DarkVibrant.getHex() +")"; 
-                    document.getElementsByClassName('track-display')[0].style.color = palette.LightMuted.getHex();
+                    console.log(palette.LightMuted.getHsl());
+                    // palette.LightMuted.getHsl[2] = palette.LightMuted.getHsl()[2] + .2 > 1 ? 1 : palette.LightMuted.getHsl()[2] + .2;   // bump brightness 20%
+                    // document.getElementsByClassName('track-display')[0].style.color = "hsl(" 
+                    //     + (palette.LightMuted.getHsl()[0] * 100) + ", " 
+                    //     + (palette.LightMuted.getHsl()[1] * 100) + "%, " 
+                    //     + (palette.LightMuted.getHsl()[2] * 100) + "%)";
+                    document.getElementsByClassName('track-display')[0].style.color = ColorUtils.getSwatchWithMostContrast(palette.DarkVibrant, 
+                        [palette.LightMuted, palette.DarkMuted, palette.LightVibrant, palette.Muted]).getHex();
                 });
             } else {
                 document.getElementsByTagName('body')[0].style.backgroundAttachment = "";
