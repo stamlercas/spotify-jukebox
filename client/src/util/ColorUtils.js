@@ -14,8 +14,6 @@ ColorUtils.prototype.getSwatchWithMostContrast = (swatch, swatches) => {
     let maxContrastSwatchRatio = 0; // contains actual ratio value for swatch
     swatches.forEach(s => {
         let ratio = calculateContrast(s, swatch);
-        console.log(swatch);
-        console.log(ratio);
         if (ratio > maxContrastSwatchRatio) {
             maxContrastSwatch = s;
             maxContrastSwatchRatio = ratio;

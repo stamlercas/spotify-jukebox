@@ -70,12 +70,7 @@ class NowPlaying extends Component {
                 v.getPalette((err, palette) => {
                     document.getElementsByTagName('body')[0].style.backgroundAttachment = "fixed";
                     document.getElementsByTagName('body')[0].style.backgroundImage = "linear-gradient(" + palette.Vibrant.getHex() + ", " + palette.DarkVibrant.getHex() +")"; 
-                    console.log(palette.LightMuted.getHsl());
-                    // palette.LightMuted.getHsl[2] = palette.LightMuted.getHsl()[2] + .2 > 1 ? 1 : palette.LightMuted.getHsl()[2] + .2;   // bump brightness 20%
-                    // document.getElementsByClassName('track-display')[0].style.color = "hsl(" 
-                    //     + (palette.LightMuted.getHsl()[0] * 100) + ", " 
-                    //     + (palette.LightMuted.getHsl()[1] * 100) + "%, " 
-                    //     + (palette.LightMuted.getHsl()[2] * 100) + "%)";
+                    document.getElementsByTagName('body')[0].style.backgroundColor = palette.DarkVibrant.getHex();
                     document.getElementsByClassName('track-display')[0].style.color = ColorUtils.getSwatchWithMostContrast(palette.DarkVibrant, 
                         [palette.LightMuted, palette.DarkMuted, palette.LightVibrant, palette.Muted]).getHex();
                 });
