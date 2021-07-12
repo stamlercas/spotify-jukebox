@@ -1,3 +1,5 @@
+const { Swatch } = require("node-vibrant/lib/color");
+
 /**
  * Will return a json response for calls made to server
  */
@@ -9,7 +11,7 @@
  * @param {*} swatches list of swatches
  * @returns 
  */
-ColorUtils.prototype.getSwatchWithMostContrast = (swatch, swatches) => {
+ColorUtils.prototype.getMostContrast = (swatch, swatches) => {
     let maxContrastSwatch;      // contains swatch with highest ratio
     let maxContrastSwatchRatio = 0; // contains actual ratio value for swatch
     swatches.forEach(s => {
@@ -19,6 +21,10 @@ ColorUtils.prototype.getSwatchWithMostContrast = (swatch, swatches) => {
             maxContrastSwatchRatio = ratio;
         }
     });
+    // if contrast ratio is less than 4.5:1, pick either black or white depending on how bright the color is
+    if (maxContrastSwatchRatio < 4.5) {
+        maxContrastSwatch = calculateRelativeLuminance(maxContrastSwatch) > .5 ? blackSwatch : whiteSwatch;
+    }
     return maxContrastSwatch;
 };
 
@@ -42,7 +48,7 @@ var calculateContrast = function(swatch1, swatch2) {
  * @returns 
  */
 var calculateRelativeLuminance = function(r, g, b) {
-    return (r * 0.2126 + g * 0.7152 + b * 0.0722);
+    return (calculateLuminance(r) * 0.2126 + calculateLuminance(g) * 0.7152 + calculateLuminance(b) * 0.0722);
 }
 
 /**
@@ -51,7 +57,11 @@ var calculateRelativeLuminance = function(r, g, b) {
  * @returns 
  */
 var calculateLuminance = function(value) {
+    value /= 255;
     return (value <= 0.03928) ? value / 12.92 : Math.pow(((value + 0.055) / 1.055), 2.4);
 }
+
+var whiteSwatch = new Swatch([255, 255, 255], 0);
+var blackSwatch = new Swatch([0, 0, 0], 0);
 
 module.exports = new ColorUtils();

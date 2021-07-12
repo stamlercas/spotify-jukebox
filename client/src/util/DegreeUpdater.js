@@ -21,8 +21,6 @@ export class DegreeUpdater {
             if (this._degree == this._maxDegree || this._degree == this._minDegree) {
                 this._direction *= -1;
             }
-
-            console.log(this._degree);
         }, 750);
     }
 

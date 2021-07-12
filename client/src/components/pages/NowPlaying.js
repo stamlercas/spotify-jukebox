@@ -78,7 +78,7 @@ class NowPlaying extends Component {
                     document.getElementsByTagName('body')[0].style.backgroundImage = "linear-gradient(" + this.degreeUpdater.getDegree() + "deg, "
                             + palette.Vibrant.getHex() + ", " + palette.DarkVibrant.getHex() +")"; 
                     document.getElementsByTagName('body')[0].style.backgroundColor = palette.DarkVibrant.getHex();
-                    document.getElementsByClassName('track-display')[0].style.color = ColorUtils.getSwatchWithMostContrast(palette.DarkVibrant, 
+                    document.getElementsByClassName('track-display')[0].style.color = ColorUtils.getMostContrast(palette.Vibrant, 
                         [palette.LightMuted, palette.DarkMuted, palette.LightVibrant, palette.Muted]).getHex();
                 });
             } else {
