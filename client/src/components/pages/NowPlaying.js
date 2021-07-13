@@ -7,6 +7,7 @@ import { properties } from '../../properties.js';
 import Vibrant from 'node-vibrant';
 import ColorUtils from '../../util/ColorUtils.js';
 import DegreeUpdater from '../../util/DegreeUpdater.js';
+import ObjectUtils from '../../util/ObjectUtils.js';
 
 const queryStringParser = require('query-string');
 
@@ -65,10 +66,10 @@ class NowPlaying extends Component {
      * @param {*} data 
      */
     setNowPlayingSong(data) {
-        if (data.body.item != null) {
+        if (!ObjectUtils.isEmpty(data.body) && data.body.item != null) {
             this.setState({
                 data: data.body,
-                playerState: data.statusCode == 204 ? PlayerState.Not_Playing : PlayerState.Playing
+                playerState: PlayerState.Playing
             });
             console.log(this.state.data);
             if (this.state.playerState == PlayerState.Playing) {
@@ -86,6 +87,8 @@ class NowPlaying extends Component {
                 document.getElementsByTagName('body')[0].style.backgroundImage = ""; 
                 document.getElementsByClassName('track-display')[0].style.color = "";
             }
+        } else {
+            this.setState({playerState: PlayerState.Not_Playing});
         }
     }
 
@@ -107,7 +110,7 @@ class NowPlaying extends Component {
 
     render() {
         return (
-            <div>
+            <div class="now-playing-container">
                 {this.state.showTrackQueuedAlert && 
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         Track was added to the queue successfully!
