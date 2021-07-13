@@ -148,6 +148,13 @@ router.post('/devices', function(req, res, next) {
   res.end();
 });
 
+router.post('/reset', function(req, res, next) {
+  req.app.get('spotifyPlayer').reset();
+
+  res.statusCode = 204;
+  res.end();
+});
+
 /**
  * Take the code sent from Spotify and grant an access token and save it.
  * Once done, redirect back to home page.

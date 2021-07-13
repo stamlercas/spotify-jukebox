@@ -51,6 +51,12 @@ ServerApiClient.prototype.setAvailableDevice = (deviceId) =>
     });
 
 /**
+ * Reset app to initial state
+ * @param {string} deviceId 
+ */
+ ServerApiClient.prototype.reset = () => fetchData('/api/reset', 'POST');
+
+/**
  * Intended to intercept the response of an api call to look for a redirect url. If 
  * a redirect url is found, then we want to redirect the window to the given url. This
  * is useful when the access token on the server has either not been generated or has expired.
@@ -59,7 +65,7 @@ ServerApiClient.prototype.setAvailableDevice = (deviceId) =>
 var fetchData = function(url, method = 'GET', body = {}) {
     return composeFetch(url, method, body).then(res => {
         if (res.status == 204) {
-            return Promise.resolve('No content returned.');
+            return Promise.resolve(res);
         }
         return res.json();
     })
