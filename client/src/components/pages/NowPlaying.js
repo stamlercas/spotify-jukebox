@@ -112,7 +112,7 @@ class NowPlaying extends Component {
         return (
             <div class="now-playing-container">
                 {this.state.showTrackQueuedAlert && 
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <div class="alert alert-success alert-dismissible fade show track-queue-alert" role="alert">
                         Track was added to the queue successfully!
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>

@@ -17,6 +17,27 @@
     font-size:1.6rem;
 }
 
+.track-display {
+    min-height: calc(100vh - 100px);
+    display: flex;
+    align-items: center;
+}
+
+.track-item {
+    flex: 1 1 0;
+}
+
+.now-playing-container {
+    position: relative;
+}
+
+.track-queue-alert {
+    position: absolute;
+    top: 0;
+    width:100%;
+    z-index: 2;
+}
+
 /* Probably a better way to do this... */
 .sig-canvas {
     border: 1px solid white;
