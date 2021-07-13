@@ -103,7 +103,7 @@ class NowPlaying extends Component {
                 );
             default:
                 return (
-                    <h2 class="text-center">{this.state.playerState}</h2>
+                    <h2 class="text-center player-state-text">{this.state.playerState}</h2>
                 );
         }
     }

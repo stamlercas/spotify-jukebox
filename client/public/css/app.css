@@ -31,6 +31,10 @@
     position: relative;
 }
 
+.player-state-text {
+    width: 100%;
+}
+
 .track-queue-alert {
     position: absolute;
     top: 0;
