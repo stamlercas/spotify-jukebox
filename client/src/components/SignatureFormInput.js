@@ -61,7 +61,7 @@ class SignatureFormInput extends Component {
                         className: 'sig-canvas',
                         id: 'sig-canvas'}}/>
                 <div class="invalid-feedback">
-                    Sign it.
+                    Put yo autograph here.
                 </div>
                 <button class="btn btn-link float-right" type="button" onClick={this.clearCanvas}>Clear</button>
                 <div style={{clear: 'both'}}></div>

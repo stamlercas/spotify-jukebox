@@ -71,7 +71,7 @@ class PlaySongModal extends Component {
                                 <div class="col-8">
                                     <input id="txt-input-name" type="text" class="form-control input" required />
                                     <div class="invalid-feedback">
-                                        Please provide your name.
+                                        Name please.
                                     </div>
                                 </div>
                         </div>
