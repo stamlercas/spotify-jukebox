@@ -30,6 +30,4 @@ Please make sure the queue has been cleared, prior to using the app. The first s
 
 Search for a song, album, or artist and queue a song!
 
-![Screenshot of home page](https://user-images.githubusercontent.com/16214116/140803371-09c4f618-4718-49cd-9e6b-397ac9e2aca4.png)
-![Screenshot of search results](https://user-images.githubusercontent.com/16214116/140803376-65518a27-e2c2-489a-a95d-d568ce0def12.png)
-![Screenshot of confirmation modal](https://user-images.githubusercontent.com/16214116/140803379-2acd344a-5e2c-4814-b458-c8f295dfa9dc.png)
+<img src="https://user-images.githubusercontent.com/16214116/140803971-7bd0200e-1358-427f-80c1-783412ec416a.png" width="30%"></img> <img src="https://user-images.githubusercontent.com/16214116/140803950-d18079c6-774e-4bc4-a774-9a0f69a444e4.png" width="30%"></img> <img src="https://user-images.githubusercontent.com/16214116/140803954-ad0fcd94-dd1b-4566-9988-9a54bad96d7a.png" width="30%"></img> 
