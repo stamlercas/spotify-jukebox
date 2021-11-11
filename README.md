@@ -31,3 +31,6 @@ Please make sure the queue has been cleared, prior to using the app. The first s
 Search for a song, album, or artist and queue a song!
 
 <img src="https://user-images.githubusercontent.com/16214116/140803971-7bd0200e-1358-427f-80c1-783412ec416a.png" width="30%"></img> <img src="https://user-images.githubusercontent.com/16214116/140803950-d18079c6-774e-4bc4-a774-9a0f69a444e4.png" width="30%"></img> <img src="https://user-images.githubusercontent.com/16214116/140803954-ad0fcd94-dd1b-4566-9988-9a54bad96d7a.png" width="30%"></img> 
+
+
+This project makes use of [spotify-viz](https://github.com/zachwinter/spotify-viz) to create the audio visualizations.
