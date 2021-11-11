@@ -9,6 +9,7 @@ import ColorUtils from '../../util/ColorUtils.js';
 import DegreeUpdater from '../../util/DegreeUpdater.js';
 import ObjectUtils from '../../util/ObjectUtils.js';
 import Visualization from '../../spotify-viz/visualization.js';
+import StickyTrackDisplay from "../StickyTrackDisplay.js";
 
 const queryStringParser = require('query-string');
 
@@ -25,7 +26,8 @@ class NowPlaying extends Component {
             data: {},
             playerState: PlayerState.Loading,
             showModal: false,
-            showTrackQueuedAlert: false
+            showTrackQueuedAlert: false,
+            isVisualizationEnabled: true
         }
 
         this.toggleModal = this.toggleModal.bind(this);
@@ -89,7 +91,8 @@ class NowPlaying extends Component {
                     document.getElementsByTagName('body')[0].style.backgroundImage = "linear-gradient(" + this.degreeUpdater.getDegree() + "deg, "
                             + palette.Vibrant.getHex() + ", " + palette.DarkVibrant.getHex() +")"; 
                     document.getElementsByTagName('body')[0].style.backgroundColor = palette.DarkVibrant.getHex();
-                    document.getElementsByClassName('track-display')[0].style.color = ColorUtils.getMostContrast(palette.Vibrant, 
+
+                    document.getElementsByClassName('track-display')[0].style.color = this.state.isVisualizationEnabled ? '#000' : ColorUtils.getMostContrast(palette.Vibrant, 
                         [palette.LightMuted, palette.DarkMuted, palette.LightVibrant, palette.Muted]).getHex();
                     
                     // set theme to album
@@ -112,9 +115,17 @@ class NowPlaying extends Component {
     getDisplay() {
         switch(this.state.playerState) {
             case PlayerState.Playing:
-                return (
-                    <TrackDisplay track={this.state.data.item} />
-                );
+                return this.state.isVisualizationEnabled 
+                    ? ( 
+                        <div class="track-fixed-bottom-display">
+                            <StickyTrackDisplay track={this.state.data.item} /> 
+                        </div>
+                    ) 
+                    : ( 
+                        <div  class="track-full-screen-display track-vertical-align">
+                            <TrackDisplay track={this.state.data.item} /> 
+                        </div>
+                    );
             default:
                 return (
                     <h2 class="text-center player-state-text">{this.state.playerState}</h2>
