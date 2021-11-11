@@ -8,6 +8,7 @@ import Vibrant from 'node-vibrant';
 import ColorUtils from '../../util/ColorUtils.js';
 import DegreeUpdater from '../../util/DegreeUpdater.js';
 import ObjectUtils from '../../util/ObjectUtils.js';
+import Visualization from '../../spotify-viz/visualization.js';
 
 const queryStringParser = require('query-string');
 
@@ -46,6 +47,7 @@ class NowPlaying extends Component {
         if (queryParameters.track_queued) {
             this.setState({showTrackQueuedAlert: true});
         }
+
         ServerApiClient.getNowPlaying().then(res => {
             this.setNowPlayingSong(res);
         });
@@ -55,6 +57,14 @@ class NowPlaying extends Component {
             this.setNowPlayingSong(data);
         });
         this.degreeUpdater = new DegreeUpdater();
+
+        this.visualization = new Visualization({
+            currentlyPlaying: '/api/nowplaying', 
+            trackAnalysis: '/api/audio-analysis/', 
+            trackFeatures: '/api/track-features/', 
+            volumeSmoothing: 10,
+            theme: []
+        });
     }
 
     componentWillUnmount() {
@@ -71,16 +81,20 @@ class NowPlaying extends Component {
                 data: data.body,
                 playerState: PlayerState.Playing
             });
-            console.log(this.state.data);
             if (this.state.playerState == PlayerState.Playing) {
                 let v = new Vibrant(this.state.data.item.album.images[0].url);
                 v.getPalette((err, palette) => {
+                    // set background color gradient according album art                    
                     document.getElementsByTagName('body')[0].style.backgroundAttachment = "fixed";
                     document.getElementsByTagName('body')[0].style.backgroundImage = "linear-gradient(" + this.degreeUpdater.getDegree() + "deg, "
                             + palette.Vibrant.getHex() + ", " + palette.DarkVibrant.getHex() +")"; 
                     document.getElementsByTagName('body')[0].style.backgroundColor = palette.DarkVibrant.getHex();
                     document.getElementsByClassName('track-display')[0].style.color = ColorUtils.getMostContrast(palette.Vibrant, 
                         [palette.LightMuted, palette.DarkMuted, palette.LightVibrant, palette.Muted]).getHex();
+                    
+                    // set theme to album
+                    this.visualization.setTheme([palette.Vibrant.getHex(), palette.LightMuted.getHex(), palette.DarkMuted.getHex(), 
+                        palette.LightVibrant.getHex(), palette.Muted.getHex()]);
                 });
             } else {
                 document.getElementsByTagName('body')[0].style.backgroundAttachment = "";

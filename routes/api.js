@@ -155,6 +155,20 @@ router.post('/reset', function(req, res, next) {
   res.end();
 });
 
+router.get('/audio-analysis/:id', function(req, res, next) {
+  let id = req.params.id;
+  req.app.get('spotifyPlayer').getSpotifyApi().getAudioAnalysisForTrack(id)
+    .then(result => res.send.bind(res.send(result.body)))
+    .catch(error => next(error));
+});
+
+router.get('/track-features/:id', function(req, res, next) {
+  let id = req.params.id;
+  req.app.get('spotifyPlayer').getSpotifyApi().getAudioFeaturesForTrack(id)
+    .then(result => res.send.bind(res.send(result.body)))
+    .catch(error => next(error));
+});
+
 /**
  * Take the code sent from Spotify and grant an access token and save it.
  * Once done, redirect back to home page.
