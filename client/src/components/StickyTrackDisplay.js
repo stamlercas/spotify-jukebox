@@ -21,7 +21,7 @@ class StickyTrackDisplay extends TrackDisplay {
                         <div class="col-3 col-md-2 col-lg-1">
                             <img class="img-fluid" src={albumUrl} />
                         </div>
-                        <div class="col track-vertical-align ellipsis">
+                        <div class="col track-vertical-align sticky-track-info ellipsis">
                             <div class="track-item text-light">
                                 <div class="">
                                     {artists} - {track}

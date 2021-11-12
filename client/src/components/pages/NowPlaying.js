@@ -27,7 +27,7 @@ class NowPlaying extends Component {
             playerState: PlayerState.Loading,
             showModal: false,
             showTrackQueuedAlert: false,
-            isVisualizationEnabled: true
+            isVisualizationEnabled: false,
         }
 
         this.toggleModal = this.toggleModal.bind(this);
@@ -60,13 +60,12 @@ class NowPlaying extends Component {
         });
         this.degreeUpdater = new DegreeUpdater();
 
-        this.visualization = new Visualization({
+        this.visualization = this.state.isVisualizationEnabled ? new Visualization({
             currentlyPlaying: '/api/nowplaying', 
             trackAnalysis: '/api/audio-analysis/', 
             trackFeatures: '/api/track-features/', 
-            volumeSmoothing: 10,
-            theme: []
-        });
+            volumeSmoothing: 75
+        }) : {};
     }
 
     componentWillUnmount() {
@@ -84,7 +83,7 @@ class NowPlaying extends Component {
                 playerState: PlayerState.Playing
             });
             if (this.state.playerState == PlayerState.Playing) {
-                let v = new Vibrant(this.state.data.item.album.images[0].url);
+                let v = new Vibrant(this.state.data.item.album.images[0].url, {colors: 256});
                 v.getPalette((err, palette) => {
                     // set background color gradient according album art                    
                     document.getElementsByTagName('body')[0].style.backgroundAttachment = "fixed";
@@ -96,8 +95,9 @@ class NowPlaying extends Component {
                         [palette.LightMuted, palette.DarkMuted, palette.LightVibrant, palette.Muted]).getHex();
                     
                     // set theme to album
-                    this.visualization.setTheme([palette.Vibrant.getHex(), palette.LightMuted.getHex(), palette.DarkMuted.getHex(), 
-                        palette.LightVibrant.getHex(), palette.Muted.getHex()]);
+                    if (!ObjectUtils.isEmpty(this.visualization)) {
+                        this.visualization.setPalette(palette);
+                    }
                 });
             } else {
                 document.getElementsByTagName('body')[0].style.backgroundAttachment = "";
@@ -122,13 +122,13 @@ class NowPlaying extends Component {
                         </div>
                     ) 
                     : ( 
-                        <div  class="track-full-screen-display track-vertical-align">
+                        <div  class="full-screen-display track-vertical-align">
                             <TrackDisplay track={this.state.data.item} /> 
                         </div>
                     );
             default:
                 return (
-                    <h2 class="text-center player-state-text">{this.state.playerState}</h2>
+                    <h2 class="full-screen-display text-center player-state-text bg-white">{this.state.playerState}</h2>
                 );
         }
     }

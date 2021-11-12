@@ -9,6 +9,7 @@ import Search from './pages/Search';
 import AlbumPage from './pages/AlbumPage';
 import ArtistPage from './pages/ArtistPage';
 import SettingsPage from "./pages/SettingsPage";
+import StickyTrackDisplay from "./StickyTrackDisplay";
 
 class App extends Component {
   render() {

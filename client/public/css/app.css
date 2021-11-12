@@ -17,7 +17,7 @@
     font-size:1.6rem;
 }
 
-.track-full-screen-display {
+.full-screen-display {
     min-height: calc(100vh - 100px);
 }
 
@@ -80,4 +80,8 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-  }
+}
+
+.sticky-track-info {
+    padding-left:0;
+}

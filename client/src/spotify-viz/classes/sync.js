@@ -176,8 +176,12 @@ export default class Sync {
   
     this.state.intervalTypes.forEach(type => {
       const index = determineInterval(type)
-      if (!this.state.activeIntervals[type].start || index !== this.state.activeIntervals[type].index) {
+      if (!(this.state.activeIntervals[type].start || this.state.activeIntervals[type].start === 0) || index !== this.state.activeIntervals[type].index) {
         this.state.activeIntervals[type] = { ...this.state.trackAnalysis[type][index], index }
+        if (type === 'sections') {
+          console.log(this.state.activeIntervals[type])
+          console.log(index)
+        }
       }
 
       const { start, duration } = this.state.activeIntervals[type]
