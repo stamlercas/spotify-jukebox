@@ -18,16 +18,15 @@ class StickyTrackDisplay extends TrackDisplay {
             <div class="track-item fixed-bottom bg-dark" style={{padding: '10px 0px'}}>
                 <div class="container">
                     <div class="row">
-                        <div class="col-4 col-sm-3 col-md-2">
+                        <div class="col-3 col-md-2 col-lg-1">
                             <img class="img-fluid" src={albumUrl} />
                         </div>
                         <div class="col track-vertical-align ellipsis">
                             <div class="track-item text-light">
                                 <div class="">
-                                    <h5 class="band-title">{artists}</h5>
+                                    {artists} - {track}
                                 </div>
                                 <div class="">{albumName}</div>
-                                <div class="">{track}</div>
                             </div>
                         </div>
                     </div>

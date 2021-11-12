@@ -84,7 +84,6 @@ export default class Sync {
   async getCurrentlyPlaying () {
     try {
       const { data } = await get(this.state.api.currentlyPlaying, { headers: this.state.api.headers })
-      console.log(data.body);
       if (!data.body || !data.body.is_playing) {
         if (this.state.active === true) {
           this.state.active = false
@@ -139,6 +138,7 @@ export default class Sync {
         interval.duration = interval.duration * 1000
       })
     })
+    console.log(this.state.intervalTypes)
 
     const tock = window.performance.now() - tick
 
