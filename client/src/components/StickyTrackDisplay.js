@@ -9,24 +9,31 @@ class StickyTrackDisplay extends TrackDisplay {
         super(props);
     }
 
+    componentDidMount() {
+        if (this.props.setBottomPadding) {
+            let height = document.getElementById('sticky-track-display').clientHeight;
+            document.body.setAttribute('style', 'padding-bottom: ' + height + 'px');
+        }
+    }
+
     render() {
         let artists = this.getArtists();
         let track = this.getTrack();
         let albumUrl = this.getAlbumImage();
         let albumName = this.getAlbum();
         return (
-            <div class="track-item fixed-bottom bg-dark" style={{padding: '10px 0px'}}>
+            <div id="sticky-track-display" class="track-item fixed-bottom bg-dark" style={{padding: '10px 0px'}}>
                 <div class="container">
                     <div class="row">
                         <div class="col-3 col-md-2 col-lg-1">
                             <img class="img-fluid" src={albumUrl} />
                         </div>
-                        <div class="col track-vertical-align sticky-track-info ellipsis">
-                            <div class="track-item text-light">
-                                <div class="">
+                        <div class="col track-vertical-align sticky-track-info">
+                            <div class="text-light" style={{overflow: 'hidden'}}>
+                                <div class="truncated">
                                     {artists} - {track}
                                 </div>
-                                <div class="">{albumName}</div>
+                                <div class="truncated">{albumName}</div>
                             </div>
                         </div>
                     </div>
@@ -34,6 +41,10 @@ class StickyTrackDisplay extends TrackDisplay {
             </div>
         );
     }
+}
+
+StickyTrackDisplay.defaultProps = {
+    setBottomPadding: true
 }
 
 export default StickyTrackDisplay;

@@ -76,7 +76,7 @@
     height: 160px;
 }
 
-.ellipsis {
+.truncated {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -84,4 +84,5 @@
 
 .sticky-track-info {
     padding-left:0;
+    overflow: hidden;
 }

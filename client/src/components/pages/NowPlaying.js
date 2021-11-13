@@ -1,9 +1,8 @@
 import React, { Component } from "react";
+import { withRouter } from 'react-router-dom'
 import TrackDisplay from '../TrackDisplay.js';
 import ServerApiClient from '../../client/ServerApiClient.js';
 import AvailableDeviceModal from "../AvailableDeviceModal.js";
-import socketIOClient from "socket.io-client";
-import { properties } from '../../properties.js';
 import Vibrant from 'node-vibrant';
 import ColorUtils from '../../util/ColorUtils.js';
 import DegreeUpdater from '../../util/DegreeUpdater.js';
@@ -23,7 +22,7 @@ class NowPlaying extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: {},
+            track: {},
             playerState: PlayerState.Loading,
             showModal: false,
             showTrackQueuedAlert: false,
@@ -41,6 +40,9 @@ class NowPlaying extends Component {
         });
     }
 
+    /**
+     * Called after render
+     */
     componentDidMount() {
         let queryParameters = queryStringParser.parse(this.props.location.search);
         if (queryParameters.activation_success) {   // server side was just activated, so prompt to select available devices
@@ -50,14 +52,9 @@ class NowPlaying extends Component {
             this.setState({showTrackQueuedAlert: true});
         }
 
-        ServerApiClient.getNowPlaying().then(res => {
-            this.setNowPlayingSong(res);
-        });
-        const socket = socketIOClient(properties.serverUrl + ":3001");
-        socket.on("NowPlaying", response => {
-            let data = JSON.parse(response);
-            this.setNowPlayingSong(data);
-        });
+        // ServerApiClient.getNowPlaying().then(res => {
+        //     this.setNowPlayingSong(res);
+        // });
         this.degreeUpdater = new DegreeUpdater();
 
         this.visualization = this.state.isVisualizationEnabled ? new Visualization({
@@ -72,18 +69,24 @@ class NowPlaying extends Component {
         this.degreeUpdater.stop();
     }
 
+    componentDidUpdate(prevProps) {
+        if (this.props.data !== prevProps.data ) {
+            this.setNowPlayingSong(prevProps.data);
+        }
+    }
+
     /**
      * Set now playing song in state
-     * @param {*} data 
+     * @param {*} track 
      */
-    setNowPlayingSong(data) {
-        if (!ObjectUtils.isEmpty(data.body) && data.body.item != null) {
+    setNowPlayingSong(track) {
+        if (!ObjectUtils.isEmpty(track.body) && track.body.item != null) {
             this.setState({
-                data: data.body,
+                track: track.body,
                 playerState: PlayerState.Playing
             });
             if (this.state.playerState == PlayerState.Playing) {
-                let v = new Vibrant(this.state.data.item.album.images[0].url, {colors: 256});
+                let v = new Vibrant(this.state.track.item.album.images[0].url);
                 v.getPalette((err, palette) => {
                     // set background color gradient according album art                    
                     document.getElementsByTagName('body')[0].style.backgroundAttachment = "fixed";
@@ -118,12 +121,12 @@ class NowPlaying extends Component {
                 return this.state.isVisualizationEnabled 
                     ? ( 
                         <div class="track-fixed-bottom-display">
-                            <StickyTrackDisplay track={this.state.data.item} /> 
+                            <StickyTrackDisplay track={this.state.track.item} /> 
                         </div>
                     ) 
                     : ( 
                         <div  class="full-screen-display track-vertical-align">
-                            <TrackDisplay track={this.state.data.item} /> 
+                            <TrackDisplay track={this.state.track.item} /> 
                         </div>
                     );
             default:
@@ -153,4 +156,4 @@ class NowPlaying extends Component {
     }
 }
 
-export default NowPlaying;
+export default withRouter(NowPlaying);
