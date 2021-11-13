@@ -9,6 +9,8 @@ import DegreeUpdater from '../../util/DegreeUpdater.js';
 import ObjectUtils from '../../util/ObjectUtils.js';
 import Visualization from '../../spotify-viz/visualization.js';
 import StickyTrackDisplay from "../StickyTrackDisplay.js";
+import * as cookies from '../../spotify-viz/util/cookie.js';
+import { properties } from "../../properties.js";
 
 const queryStringParser = require('query-string');
 
@@ -26,12 +28,13 @@ class NowPlaying extends Component {
             playerState: PlayerState.Loading,
             showModal: false,
             showTrackQueuedAlert: false,
-            isVisualizationEnabled: false,
+            isVisualizationEnabled: cookies.get(properties.cookies.visualizationEnabled) === 'true',
         }
 
         this.toggleModal = this.toggleModal.bind(this);
         this.getDisplay = this.getDisplay.bind(this);
         this.setNowPlayingSong = this.setNowPlayingSong.bind(this);
+        this.getVisualization = this.getVisualization.bind(this);
     }
 
     toggleModal() {
@@ -57,12 +60,7 @@ class NowPlaying extends Component {
         // });
         this.degreeUpdater = new DegreeUpdater();
 
-        this.visualization = this.state.isVisualizationEnabled ? new Visualization({
-            currentlyPlaying: '/api/nowplaying', 
-            trackAnalysis: '/api/audio-analysis/', 
-            trackFeatures: '/api/track-features/', 
-            volumeSmoothing: 75
-        }) : {};
+        this.visualization = this.getVisualization();
     }
 
     componentWillUnmount() {
@@ -80,26 +78,26 @@ class NowPlaying extends Component {
      * @param {*} track 
      */
     setNowPlayingSong(track) {
-        if (!ObjectUtils.isEmpty(track.body) && track.body.item != null) {
+        if (!ObjectUtils.isEmpty(track)) {
             this.setState({
-                track: track.body,
+                track: track,
                 playerState: PlayerState.Playing
             });
             if (this.state.playerState == PlayerState.Playing) {
-                let v = new Vibrant(this.state.track.item.album.images[0].url);
+                let v = new Vibrant(this.state.track.album.images[0].url);
                 v.getPalette((err, palette) => {
-                    // set background color gradient according album art                    
-                    document.getElementsByTagName('body')[0].style.backgroundAttachment = "fixed";
-                    document.getElementsByTagName('body')[0].style.backgroundImage = "linear-gradient(" + this.degreeUpdater.getDegree() + "deg, "
-                            + palette.Vibrant.getHex() + ", " + palette.DarkVibrant.getHex() +")"; 
-                    document.getElementsByTagName('body')[0].style.backgroundColor = palette.DarkVibrant.getHex();
+                    if (!this.state.isVisualizationEnabled) {
+                        // set background color gradient according album art                    
+                        document.getElementsByTagName('body')[0].style.backgroundAttachment = "fixed";
+                        document.getElementsByTagName('body')[0].style.backgroundImage = "linear-gradient(" + this.degreeUpdater.getDegree() + "deg, "
+                                + palette.Vibrant.getHex() + ", " + palette.DarkVibrant.getHex() +")"; 
+                        document.getElementsByTagName('body')[0].style.backgroundColor = palette.DarkVibrant.getHex();
 
-                    document.getElementsByClassName('track-display')[0].style.color = this.state.isVisualizationEnabled ? '#000' : ColorUtils.getMostContrast(palette.Vibrant, 
-                        [palette.LightMuted, palette.DarkMuted, palette.LightVibrant, palette.Muted]).getHex();
-                    
-                    // set theme to album
-                    if (!ObjectUtils.isEmpty(this.visualization)) {
-                        this.visualization.setPalette(palette);
+                        document.getElementsByClassName('track-display')[0].style.color = ColorUtils.getMostContrast(palette.Vibrant, 
+                            [palette.LightMuted, palette.DarkMuted, palette.LightVibrant, palette.Muted]).getHex();
+                    } else {
+                        // set theme to album
+                        this.getVisualization().setPalette(palette);
                     }
                 });
             } else {
@@ -121,12 +119,12 @@ class NowPlaying extends Component {
                 return this.state.isVisualizationEnabled 
                     ? ( 
                         <div class="track-fixed-bottom-display">
-                            <StickyTrackDisplay track={this.state.track.item} /> 
+                            <StickyTrackDisplay track={this.state.track} /> 
                         </div>
                     ) 
                     : ( 
                         <div  class="full-screen-display track-vertical-align">
-                            <TrackDisplay track={this.state.track.item} /> 
+                            <TrackDisplay track={this.state.track} /> 
                         </div>
                     );
             default:
@@ -134,6 +132,23 @@ class NowPlaying extends Component {
                     <h2 class="full-screen-display text-center player-state-text bg-white">{this.state.playerState}</h2>
                 );
         }
+    }
+
+    /**
+     * Return visualization object.
+     * If no visualization object is present, create a new one if visualizations are enabled. Else just have an empty object
+     * @returns 
+     */
+    getVisualization() {
+        if (ObjectUtils.isEmpty(this.visualization)) {
+            this.visualization = this.state.isVisualizationEnabled ? new Visualization({
+                currentlyPlaying: '/api/nowplaying', 
+                trackAnalysis: '/api/audio-analysis/', 
+                trackFeatures: '/api/track-features/', 
+                volumeSmoothing: 75
+            }) : {};
+        }
+        return this.visualization;
     }
 
     render() {

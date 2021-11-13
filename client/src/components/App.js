@@ -27,7 +27,7 @@ class App extends Component {
         socket.on("NowPlaying", response => {
             let data = JSON.parse(response);
             if (!ObjectUtils.isEmpty(data.body)) {
-              this.setState({data: data});
+              this.setState({data: data.body.item});
             }
         });
   }
@@ -46,8 +46,8 @@ class App extends Component {
             </Route>
           </Switch>
         </BrowserRouter>
-        {(window.location.pathname !== '/' && !ObjectUtils.isEmpty(this.state.data.body)) &&
-          <StickyTrackDisplay track={this.state.data.body.item} />
+        {(window.location.pathname !== '/' && !ObjectUtils.isEmpty(this.state.data)) &&
+          <StickyTrackDisplay track={this.state.data} />
         }
       </div>
     );

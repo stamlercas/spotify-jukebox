@@ -55,39 +55,39 @@ export default class Visualization extends Visualizer {
   hooks () {
     this.sync.on('bar', bar => {
       let theme = this.getPaletteHexColors();
-
-      this.lastColor = this.nextColor || getRandomElement(theme)
-      this.nextColor = getRandomElement(theme.filter(color => color !== this.nextColor))
-      
-      this.lastComplimentColor = this.nextComplimentColor || getRandomElement(theme.filter(color => color !== this.nextColor || color !== this.currentBackgroundColor))
-      this.nextComplimentColor = getRandomElement(theme.filter(color => color !== this.nextColor || color !== this.currentBackgroundColor))
-
     })
 
     this.sync.on('section', section => {
       let theme = this.getPaletteHexColors();
 
+      this.lastColor = this.nextColor || getRandomElement(theme)
+      this.nextColor = getRandomElement(theme.filter(color => color !== this.nextColor))
+
       this.doPaintOverlay = Math.random() < 0.5 ? true : false;
-      this.overlayColors = [getRandomElement(theme), getRandomElement(theme), getRandomElement(theme)]
+      let startOverlayColor = getRandomElement(theme)
+      this.overlayColors = [startOverlayColor, getRandomElement(theme), getRandomElement(theme), startOverlayColor]
 
-      this.lastBackgroundColor = this.currentBackgroundColor || getRandomElement(theme.filter(color => color !== this.nextColor))
-      this.currentBackgroundColor = this.nextBackgroundColor || getRandomElement(theme.filter(color => color !== this.nextColor))
-      this.nextBackgroundColor = getRandomElement(theme.filter(color => color !== this.nextColor || color !== this.currentBackgroundColor))
+      this.setBackgroundColors()
 
-      console.log(this.nextBackgroundColor, this.lastBackgroundColor, this.currentBackgroundColor);
+      this.lastComplimentColor = this.nextComplimentColor || getRandomElement(theme.filter(color => color !== this.nextColor || color !== this.currentBackgroundColor))
+      this.nextComplimentColor = getRandomElement(theme.filter(color => color !== this.nextColor || color !== this.currentBackgroundColor))
     })
+  }
+
+  setBackgroundColors() {
+    let theme = this.getPaletteHexColors();
+    this.lastBackgroundColor = this.currentBackgroundColor || getRandomElement(theme.filter(color => color !== this.nextColor))
+    this.currentBackgroundColor = this.nextBackgroundColor || getRandomElement(theme.filter(color => color !== this.nextColor))
+    this.nextBackgroundColor = getRandomElement(theme.filter(color => color !== this.nextColor || color !== this.currentBackgroundColor))
   }
 
   paint ({ ctx, height, width, now }) {
     const beat = interpolateBasis([0, this.sync.volume * 300, 0])(this.sync.beat.progress)
 
-    // background
-    // ctx.fillStyle = interpolateRgb(this.lastBackgroundColor, this.nextBackgroundColor)(this.sync.bar.progress)
-    // ctx.fillRect(0, 0, width, height)
     this.paintBackground({ctx, width, height})
 
     this.paintOuterLines({ctx, width, height, now})
-    //this.paintInnerLines({ctx, width, height, now})
+    this.paintInnerLines({ctx, width, height, now})
 
     // sin wave in back
     // this.paintSin({ctx, width, height, now})
@@ -100,7 +100,8 @@ export default class Visualization extends Visualizer {
   }
 
   setPalette(palette) {
-      this.palette = palette
+    this.palette = palette
+    // this.setBackgroundColors()
   }
 
   getPaletteHexColors() {
@@ -124,7 +125,6 @@ export default class Visualization extends Visualizer {
     // interpolate() will return an array of interpolations depending on the objects that are passed in. Use this to create background gradient of the 2 returned interpolations
     let color1 = interpolateRgb(this.currentBackgroundColor, this.nextBackgroundColor)(this.sync.section.progress)
     let color2 = interpolateRgb(this.lastBackgroundColor, this.currentBackgroundColor)(this.sync.section.progress)
-    console.log(this.sync.section.progress)
     this.sketch.ctx.fillStyle = this.createGradient(color1, color2);  // fill in background gradient
     ctx.fillRect(0, 0, width, height)
   }
@@ -183,7 +183,7 @@ export default class Visualization extends Visualizer {
     this.createPath(ctx, { x, y }, 15)
 
     ctx.lineWidth = Math.min(this.sync.volume, 1)
-    ctx.strokeStyle = interpolateRgb(this.lastColor, this.nextColor)(this.sync.bar.progress)
+    ctx.strokeStyle = interpolateRgb(this.lastComplimentColor, this.nextComplimentColor)(this.sync.section.progress)
     ctx.stroke()
   }
 
@@ -199,7 +199,7 @@ export default class Visualization extends Visualizer {
     this.createPath(ctx, { x, y })
     
     ctx.lineWidth = (this.sync.volume * 5)
-    ctx.strokeStyle = interpolateRgb(this.lastColor, this.nextColor)(this.sync.bar.progress)
+    ctx.strokeStyle = interpolateRgb(this.lastColor, this.nextColor)(this.sync.section.progress)
     ctx.stroke()
     ctx.fillRect(0, (height/2) - (this.sync.volume * 20), width, this.sync.volume * 40)
   }
