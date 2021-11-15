@@ -53,3 +53,12 @@
     for (var nLen = aKeys.length, nIdx = 0; nIdx < nLen; nIdx++) { aKeys[nIdx] = decodeURIComponent(aKeys[nIdx]); }
     return aKeys;
   }
+
+  /**
+   * Return boolean value of cookie
+   * @param {*} sKey 
+   * @returns boolean
+   */
+  export function getBoolean(sKey) {
+    return get(sKey) === 'true';
+  }

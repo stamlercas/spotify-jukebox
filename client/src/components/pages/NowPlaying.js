@@ -28,13 +28,14 @@ class NowPlaying extends Component {
             playerState: PlayerState.Loading,
             showModal: false,
             showTrackQueuedAlert: false,
-            isVisualizationEnabled: cookies.get(properties.cookies.visualizationEnabled) === 'true',
+            isVisualizationEnabled: cookies.getBoolean(properties.cookies.visualizationEnabled),
         }
 
         this.toggleModal = this.toggleModal.bind(this);
         this.getDisplay = this.getDisplay.bind(this);
         this.setNowPlayingSong = this.setNowPlayingSong.bind(this);
         this.getVisualization = this.getVisualization.bind(this);
+        this.initVisualization = this.initVisualization.bind(this);
     }
 
     toggleModal() {
@@ -141,13 +142,18 @@ class NowPlaying extends Component {
      */
     getVisualization() {
         if (ObjectUtils.isEmpty(this.visualization)) {
-            this.visualization = this.state.isVisualizationEnabled ? new Visualization({
-                currentlyPlaying: '/api/nowplaying', 
-                trackAnalysis: '/api/audio-analysis/', 
-                trackFeatures: '/api/track-features/', 
-                volumeSmoothing: 75
-            }) : {};
+            this.initVisualization();
         }
+        return this.visualization;
+    }
+
+    initVisualization() {
+        this.visualization = this.state.isVisualizationEnabled ? new Visualization({
+            currentlyPlaying: '/api/nowplaying', 
+            trackAnalysis: '/api/audio-analysis/', 
+            trackFeatures: '/api/track-features/', 
+            volumeSmoothing: 75
+        }) : {};
         return this.visualization;
     }
 

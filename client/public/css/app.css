@@ -86,3 +86,12 @@
     padding-left:0;
     overflow: hidden;
 }
+
+.settings-icon {
+    position:absolute;
+    bottom:0;
+    right:0;
+    z-index:9999;
+    padding-bottom: 20px;
+    padding-right: 20px;
+}

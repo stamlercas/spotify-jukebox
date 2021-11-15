@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import {
   BrowserRouter,
+  Link,
   Route,
   Switch
 } from "react-router-dom";
@@ -13,6 +14,7 @@ import StickyTrackDisplay from "./StickyTrackDisplay";
 import { properties } from '../properties.js';
 import socketIOClient from "socket.io-client";
 import ObjectUtils from "../util/ObjectUtils";
+import * as cookies from '../spotify-viz/util/cookie.js';
 
 class App extends Component {
   constructor(props) {
@@ -34,7 +36,6 @@ class App extends Component {
 
   render() {
     return (
-      <div>
         <BrowserRouter>
           <Switch>
             <Route path="/settings" component={SettingsPage} />
@@ -45,11 +46,15 @@ class App extends Component {
               <NowPlaying data={this.state.data} location={this.props.location} />
             </Route>
           </Switch>
-        </BrowserRouter>
-        {(window.location.pathname !== '/' && !ObjectUtils.isEmpty(this.state.data)) &&
+          {(window.location.pathname !== '/' && !ObjectUtils.isEmpty(this.state.data)) &&
           <StickyTrackDisplay track={this.state.data} />
-        }
-      </div>
+          }
+          { cookies.getBoolean(properties.cookies.administratorMode) &&
+            <h2>
+              <Link to="/settings"><i class="bi bi-gear text-white settings-icon"></i></Link>
+            </h2>
+          }
+        </BrowserRouter>
     );
   }
 }

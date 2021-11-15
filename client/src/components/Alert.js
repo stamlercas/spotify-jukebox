@@ -8,7 +8,7 @@ class Alert extends Component {
     render() {
         return(
             <div class={"alert alert-" + this.props.type + " alert-dismissible fade show"} role="alert">
-                {this.props.text}
+                <span dangerouslySetInnerHTML={{__html: this.props.text}}></span>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
