@@ -1,7 +1,6 @@
 import React, { Component } from "react";
-import { withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom';
 import TrackDisplay from '../TrackDisplay.js';
-import ServerApiClient from '../../client/ServerApiClient.js';
 import AvailableDeviceModal from "../AvailableDeviceModal.js";
 import Vibrant from 'node-vibrant';
 import ColorUtils from '../../util/ColorUtils.js';
@@ -66,6 +65,13 @@ class NowPlaying extends Component {
 
     componentWillUnmount() {
         this.degreeUpdater.stop();
+        if(this.state.isVisualizationEnabled) {
+            this.visualization.stop();
+            this.visualization = null;
+        } else {
+            document.getElementsByTagName('body')[0].style.backgroundImage = '';
+            document.getElementsByTagName('body')[0].style.backgroundColor = '#fff';
+        }
     }
 
     componentDidUpdate(prevProps) {

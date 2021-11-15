@@ -19,16 +19,36 @@ class Search extends Component {
             data: {},
             searchState: SearchState.Loading
         };
+
+        this.search = this.search.bind(this);
+        this.getQueryParameters = this.getQueryParameters.bind(this);
+        this.updateSearchValue = this.updateSearchValue.bind(this);
     }
     
 
     componentDidMount() {
+        this.updateSearchValue();
         if (!this.props.location.search) {
             this.setState({searchState: SearchState.No_Query});
             return;
         }
+        this.search();
+    }
 
-        let queryParameters = queryStringParser.parse(this.props.location.search);
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.location.search !== this.props.location.search) {
+            this.updateSearchValue();
+            this.setState({searchState: SearchState.Loading});
+            this.search();
+        }
+    }
+
+    componentWillUnmount() {
+        document.getElementById('search').value = '';
+    }
+
+    search() {
+        let queryParameters = this.getQueryParameters();
         ServerApiClient.search(queryParameters.q).then(res => {
             let status = res.statusCode;
             this.setState({
@@ -36,6 +56,17 @@ class Search extends Component {
                 searchState: SearchState.Search_Success
             });
         });
+    }
+
+    getQueryParameters() {
+        return queryStringParser.parse(this.props.location.search);
+    }
+
+    /**
+     * For consistency, when component updates and mounts, we should make sure the search input field has the current value
+     */
+    updateSearchValue() {
+        document.getElementById('search').value = this.getQueryParameters().q;
     }
 
     render() {

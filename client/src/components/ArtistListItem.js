@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 class ArtistListItem extends Component {
     constructor(props) {
@@ -8,7 +9,7 @@ class ArtistListItem extends Component {
     render() {
         let artist = this.props.artist;
         return (
-            <a href={"/artist/" + artist.id} class="list-group-item list-group-item-action">
+            <Link to={"/artist/" + artist.id} className="list-group-item list-group-item-action">
                 <div class="row">
                     <div class="col-3 justify-content-center align-self-center">
                         {artist.images[artist.images.length - 1] !== undefined &&
@@ -21,7 +22,7 @@ class ArtistListItem extends Component {
                             {artist.name}
                     </div>
                 </div>
-            </a>
+            </Link>
         );
     }
 }

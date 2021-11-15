@@ -30,6 +30,11 @@ export default class Visualizer {
     })
   }
 
+  stop() {
+    this.sketch.stop();
+    this.sketch.canvas.remove();
+  }
+
   /**
    * @method hooks - Attach hooks to interval change events. 
    */

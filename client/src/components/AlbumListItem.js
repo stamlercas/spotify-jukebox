@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 /**
  * Component to render an album list item.
@@ -20,7 +21,7 @@ class AlbumListItem extends Component {
     render() {
         let album = this.props.album;
         return (
-            <a href={"/album/" + album.id} class="list-group-item list-group-item-action">
+            <Link to={"/album/" + album.id} className="list-group-item list-group-item-action">
                 <div class="row">
                     <div class="col-3">
                         {album.images[album.images.length - 1] !== undefined &&
@@ -36,7 +37,7 @@ class AlbumListItem extends Component {
                             }{album.release_date.substring(0, 4)}</div>
                     </div>
                 </div>
-            </a>
+            </Link>
         );
     }
 }

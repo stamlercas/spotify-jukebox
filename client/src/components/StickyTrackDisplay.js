@@ -15,6 +15,9 @@ class StickyTrackDisplay extends TrackDisplay {
             document.body.setAttribute('style', 'padding-bottom: ' + height + 'px');
         }
     }
+    componentWillUnmount() {
+        document.body.setAttribute('style', 'padding-bottom: 0');
+    }
 
     render() {
         let artists = this.getArtists();

@@ -11,6 +11,7 @@ import AlbumPage from './pages/AlbumPage';
 import ArtistPage from './pages/ArtistPage';
 import SettingsPage from "./pages/SettingsPage";
 import StickyTrackDisplay from "./StickyTrackDisplay";
+import Header from './Header';
 import { properties } from '../properties.js';
 import socketIOClient from "socket.io-client";
 import ObjectUtils from "../util/ObjectUtils";
@@ -37,23 +38,26 @@ class App extends Component {
   render() {
     return (
         <BrowserRouter>
-          <Switch>
-            <Route path="/settings" component={SettingsPage} />
-            <Route path="/search" component={Search}/>
-            <Route path="/artist/:id" component={ArtistPage} />
-            <Route path="/album/:id" component={AlbumPage} />
-            <Route path="/">
-              <NowPlaying data={this.state.data} location={this.props.location} />
-            </Route>
-          </Switch>
-          {(window.location.pathname !== '/' && !ObjectUtils.isEmpty(this.state.data)) &&
-          <StickyTrackDisplay track={this.state.data} />
-          }
-          { cookies.getBoolean(properties.cookies.administratorMode) &&
-            <h2>
-              <Link to="/settings"><i class="bi bi-gear text-white settings-icon"></i></Link>
-            </h2>
-          }
+          <Header />
+          <main role="main" class="container app-container">
+            <Switch>
+              <Route path="/settings" component={SettingsPage} />
+              <Route path="/search" component={Search}/>
+              <Route path="/artist/:id" component={ArtistPage} />
+              <Route path="/album/:id" component={AlbumPage} />
+              <Route path="/">
+                <NowPlaying data={this.state.data} location={this.props.location} />
+              </Route>
+            </Switch>
+            {(window.location.pathname !== '/' && !ObjectUtils.isEmpty(this.state.data)) &&
+              <StickyTrackDisplay track={this.state.data} />
+            }
+            { cookies.getBoolean(properties.cookies.administratorMode) &&
+              <h2>
+                <Link to="/settings"><i class="bi bi-gear text-white settings-icon"></i></Link>
+              </h2>
+            }
+          </main>
         </BrowserRouter>
     );
   }
