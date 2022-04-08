@@ -54,10 +54,7 @@ class NowPlaying extends Component {
         if (queryParameters.track_queued) {
             this.setState({showTrackQueuedAlert: true});
         }
-
-        // ServerApiClient.getNowPlaying().then(res => {
-        //     this.setNowPlayingSong(res);
-        // });
+        
         this.degreeUpdater = new DegreeUpdater();
 
         this.visualization = this.getVisualization();

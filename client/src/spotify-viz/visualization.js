@@ -94,9 +94,6 @@ export default class Visualization extends Visualizer {
 
     // // sphere-ish shape
     // this.paintCenter({ctx, width, height, now})
-
-    // overlay
-    // this.paintOverlay({ctx, width, height, now})
   }
 
   setPalette(palette) {
@@ -152,25 +149,6 @@ export default class Visualization extends Visualizer {
     ctx.lineWidth = iLineWidth(progress)
     ctx.strokeStyle = interpolateRgb(this.lastColor, this.nextColor)(this.sync.bar.progress)
     ctx.stroke()
-  }
-
-  paintOverlay ({ ctx, width, height, now }) {
-    if (this.doPaintOverlay) {
-      if (!this.backgroundTick) {
-        this.backgroundTick = now
-      }
-
-      const backgroundProgress = Math.min((now - this.backgroundTick) / 10000, 1)
-      ctx.save()
-      ctx.globalCompositeOperation = 'overlay'
-      ctx.fillStyle = interpolateRgbBasis(this.overlayColors)(backgroundProgress)
-      ctx.fillRect(0, 0, width, height)
-      ctx.restore()
-
-      if (backgroundProgress === 1) {
-        this.backgroundTick = now
-      }
-    }
   }
 
   paintInnerLines ({ ctx, width, height, now }) {
