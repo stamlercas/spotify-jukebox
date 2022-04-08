@@ -3,6 +3,7 @@ import { Button, Modal }from 'react-bootstrap';
 import SignatureFormInput from './SignatureFormInput.js';
 import TrackDisplay from './TrackDisplay.js';
 import ServerApiClient from '../client/ServerApiClient.js';
+import { properties } from "../properties.js";
 
 const PlaySongModalState = {
     Play_Song: 'Play song',
@@ -15,7 +16,7 @@ class PlaySongModal extends Component {
         this.state = {
             show: this.props.show,
             playSongModalState: PlaySongModalState.Play_Song,
-            songThreshold: 10 * 60 * 1000 // 10 minutes TODO: put this in properties
+            songThreshold: properties.songThresholdDuration * 60 * 1000
         }
 
         this.playSong = this.playSong.bind(this);
@@ -60,11 +61,11 @@ class PlaySongModal extends Component {
         switch(this.state.playSongModalState) {
             case PlaySongModalState.Confirm_Play:
                 let duration_min = this.state.songThreshold / (60 * 1000);
+                let isPlural = duration_min != 1;
                 let date = new Date();
-                // todo: add clear signature option
                 return (
                     <form id="confirmation-form" novalidate>
-                        <p>This song is more than {duration_min} minutes long. Please sign and confirm before playing.</p>
+                        <p>This song is more than {duration_min} minute{isPlural && "s"} long. Please sign and confirm before playing.</p>
                         <br />
                         <div class="row">
                                 <div class="col-4">I, </div>
@@ -76,7 +77,7 @@ class PlaySongModal extends Component {
                                 </div>
                         </div>
                         <p>
-                            (hereinafter referred to as <b>Asshole</b>) understand that playing a song for more than {duration_min} minutes is a dick move. As such, <b>Asshole</b>&nbsp;
+                            (hereinafter referred to as <b>Asshole</b>) understand that playing a song for more than {duration_min} minute{isPlural && "s"} is a dick move. As such, <b>Asshole</b>&nbsp;
                             agrees to sole responsibiltiy for all bitching that may occur as a result of this song playing. <b>Asshole</b> herewith agrees to sole liability 
                             for any injury to self or others as a result of this action.
                         </p>
