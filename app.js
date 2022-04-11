@@ -8,9 +8,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var http = require('http');
-var SpotifyPlayer = require('./player/SpotifyPlayer.js');
 var cron = require('node-cron');
-var spotifyPlayer = new SpotifyPlayer();
+var spotifyPlayerMap = new Map();
 
 // socket.io stuff
 let port = 3001;
@@ -35,7 +34,8 @@ io.on("connection", (socket) => {
 
 const getNowPlayingAndEmit = socket => {
   // need to have set access token before making any spotify call
-  if (spotifyPlayer.getSpotifyApi().getAccessToken() != undefined) {
+  let spotifyPlayer = spotifyPlayerMap.get('test');
+  if (spotifyPlayer && spotifyPlayer.getSpotifyApi().getAccessToken() != undefined) {
   spotifyPlayer.getSpotifyApi().getMyCurrentPlayingTrack()
     .then(result => socket.emit("NowPlaying", JSON.stringify(result)))
     .catch(error => console.log('Error while retrieving now playing info in socket.io'))
@@ -47,22 +47,19 @@ var app = express();
 
 var apiRouter = require('./routes/api');
 
-app.set('spotifyPlayer', spotifyPlayer);
+app.set('spotifyPlayerMap', spotifyPlayerMap);
 
 // set up task for refreshing access token every hour. Note this task needs to be started before it will do anything. This will happen whenever an access token is received
-var cronTask = cron.schedule('0 * * * *', () => {
-  spotifyPlayer.getSpotifyApi().refreshAccessToken().then(
+var cronTask = cron.schedule('0 * * * *', () => spotifyPlayerMap.forEach((v, k) => {
+  v.getSpotifyApi().refreshAccessToken().then(
     (data) => {
-      console.log('The access token has been refreshed!');
+      console.log(`The access token has been refreshed for ${k}!`);
       // Save the access token so that it's used in future calls
-      spotifyPlayer.getSpotifyApi().setAccessToken(data.body['access_token']);
+      v.getSpotifyApi().setAccessToken(data.body['access_token']);
     },
     (err) => console.log('Could not refresh access token', err)
   )
-}, {
-  scheduled: false
-});
-app.set('spotifyPlayerRefreshTask', cronTask);
+}));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
