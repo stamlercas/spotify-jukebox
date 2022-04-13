@@ -11,6 +11,7 @@ var http = require('http');
 var cron = require('node-cron');
 var spotifyPlayerMap = new Map();
 var SpotifyPlayer = require('./player/SpotifyPlayer.js');
+var WordUtils = require('./util/word-utils.js');
 
 // socket.io stuff
 let port = 3001;
@@ -49,7 +50,6 @@ var app = express();
 var apiRouter = require('./routes/api');
 
 app.set('spotifyPlayerMap', spotifyPlayerMap);
-spotifyPlayerMap.set('test', new SpotifyPlayer());
 
 // set up task for refreshing access token every hour. Note this task needs to be started before it will do anything. This will happen whenever an access token is received
 var cronTask = cron.schedule('0 * * * *', () => spotifyPlayerMap.forEach((v, k) => {
@@ -74,6 +74,16 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api', apiRouter);
+
+/**
+ * Create new spotify instance, and redirect user.
+ */
+app.get('/create', function(req, res, next) {
+  let playerId = WordUtils.generateRandomWords(3);
+  spotifyPlayerMap.set(playerId, new SpotifyPlayer());
+
+  res.redirect(`${req.protocol}://${req.get('host')}/#${playerId}`);
+});
 
 app.use(function(req, res, next) {
   res.sendFile(path.join(__dirname, 'public', 'app.html'));

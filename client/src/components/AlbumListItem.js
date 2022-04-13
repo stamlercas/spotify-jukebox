@@ -21,7 +21,7 @@ class AlbumListItem extends Component {
     render() {
         let album = this.props.album;
         return (
-            <Link to={"/album/" + album.id} className="list-group-item list-group-item-action">
+            <Link to={{ pathname: `/album/${album.id}`, hash: window.location.hash}} className="list-group-item list-group-item-action">
                 <div class="row">
                     <div class="col-3">
                         {album.images[album.images.length - 1] !== undefined &&

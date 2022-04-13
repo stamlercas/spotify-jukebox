@@ -9,7 +9,7 @@ class ArtistListItem extends Component {
     render() {
         let artist = this.props.artist;
         return (
-            <Link to={"/artist/" + artist.id} className="list-group-item list-group-item-action">
+            <Link to={{pathname: `/artist/${artist.id}`, hash: window.location.hash}} className="list-group-item list-group-item-action">
                 <div class="row">
                     <div class="col-3 justify-content-center align-self-center">
                         {artist.images[artist.images.length - 1] !== undefined &&

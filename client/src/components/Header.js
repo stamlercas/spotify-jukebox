@@ -21,7 +21,8 @@ class Header extends Component {
         // action="/search"
         this.props.history.push({
             pathname: "/search",
-            search: "?q=" + this.state.query
+            search: "?q=" + this.state.query,
+            hash: window.location.hash
         });
     }
 
@@ -29,7 +30,7 @@ class Header extends Component {
         return(
             <header>
                 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-                    <Link className="navbar-brand home-icon" to="/"><i class="bi bi-house-door"></i></Link>
+                    <Link className="navbar-brand home-icon" to={{ pathname: "/", hash: window.location.hash }}><i class="bi bi-house-door"></i></Link>
                     <div style={{paddingLeft: "15px", flex: "1"}}>
                     <div id="navbarCollapse" style={{width: "100%"}} class="">
                         <form class="d-flex" onSubmit={this.search}>

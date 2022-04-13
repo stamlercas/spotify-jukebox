@@ -2,9 +2,9 @@ import Sync from './sync'
 import Sketch from './sketch'
 
 export default class Visualizer {
-  constructor ({ currentlyPlaying, trackAnalysis, trackFeatures, volumeSmoothing = 100, hidpi = true }) {
+  constructor ({ currentlyPlaying, trackAnalysis, trackFeatures, playerId, volumeSmoothing = 100, hidpi = true }) {
     /** Initialize Sync class. */
-    this.sync = new Sync({ currentlyPlaying, trackAnalysis, trackFeatures, volumeSmoothing })
+    this.sync = new Sync({ currentlyPlaying, trackAnalysis, trackFeatures, playerId,  volumeSmoothing })
 
     /** Initialize Sketch class. Assign `this.paint` as the main animation loop. */
     this.sketch = new Sketch({

@@ -10,6 +10,7 @@ import Visualization from '../../spotify-viz/visualization.js';
 import StickyTrackDisplay from "../StickyTrackDisplay.js";
 import * as cookies from '../../spotify-viz/util/cookie.js';
 import { properties } from "../../properties.js";
+import SpotifyPlayerUtils from "../../util/SpotifyPlayerUtils.js";
 
 const queryStringParser = require('query-string');
 
@@ -155,6 +156,7 @@ class NowPlaying extends Component {
             currentlyPlaying: '/api/nowplaying', 
             trackAnalysis: '/api/audio-analysis/', 
             trackFeatures: '/api/track-features/', 
+            playerId: SpotifyPlayerUtils.getPlayerId(),
             volumeSmoothing: 75
         }) : {};
         return this.visualization;

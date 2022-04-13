@@ -8,8 +8,8 @@ const TWO_PI = Math.PI * 2
 const PI_OVER_180 = Math.PI / 180
 
 export default class Visualization extends Visualizer {
-  constructor ({currentlyPlaying, trackAnalysis, trackFeatures, palette = {}}) {
-    super({ currentlyPlaying,  trackAnalysis, trackFeatures, 
+  constructor ({currentlyPlaying, trackAnalysis, trackFeatures, playerId, palette = {}}) {
+    super({ currentlyPlaying,  trackAnalysis, trackFeatures, playerId,
         volumeSmoothing: 75, 
         hidpi: false
     })

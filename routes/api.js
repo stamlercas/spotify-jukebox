@@ -15,9 +15,9 @@ router.use(function(req, res, next) {
 
   let spotifyPlayer = spotifyPlayerUtils.getSpotifyPlayer(req, req.headers['player-id']);
 
-  // if falsy, send back 406
+  // if falsy, send back 404
   if (!spotifyPlayer) {
-    res.statusCode = 406;
+    res.statusCode = 404;
     res.json({ message: `Player ${req.headers['player-id']} not found` });
     return;
   }
@@ -210,7 +210,7 @@ router.get('/setAccessToken', function(req, res) {
       // response does not depend on the next calls so can call them while response is redirected
       spotifyPlayerUtils.getSpotifyPlayer(req, playerId).getSpotifyApi().pause().catch(error => console.log(error));
 
-      res.redirect(req.protocol + '://' + req.get('host') + '/?activation_success=true');
+      res.redirect(`${req.protocol}://${req.get('host')}/?activation_success=true#${playerId}`);
     },
     function(err) {
       console.log('Something went wrong!', err);

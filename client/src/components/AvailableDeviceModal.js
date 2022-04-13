@@ -45,7 +45,7 @@ class AvailableDeviceModal extends Component {
                 });
                 this.deviceId = this.state.data[0].id;
             }
-        });
+        }, res => this.setState({availableDeviceModalState: AvailableDeviceModalState.No_Available_Devices}));
     }
 
     selectDevice() {

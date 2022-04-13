@@ -45,7 +45,7 @@ class PlaySongModal extends Component {
         if (canPlay) {
             ServerApiClient.addToQueue(this.props.track).then(() => {
                 this.props.close();
-                window.location.href = '/?track_queued=true';
+                window.location.href = `/?track_queued=true${window.location.hash}`;
             });
         }
     }

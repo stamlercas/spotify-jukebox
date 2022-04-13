@@ -16,6 +16,7 @@ import { properties } from '../properties.js';
 import socketIOClient from "socket.io-client";
 import ObjectUtils from "../util/ObjectUtils";
 import * as cookies from '../spotify-viz/util/cookie.js';
+import SpotifyPlayerUtils from "../util/SpotifyPlayerUtils";
 
 class App extends Component {
   constructor(props) {
@@ -30,7 +31,7 @@ class App extends Component {
       properties.serverUrl + ":3001", 
       {
         query: {
-          playerId: 'test'
+          playerId: SpotifyPlayerUtils.getPlayerId()
       }});
         socket.on("NowPlaying", response => {
             let data = JSON.parse(response);
@@ -59,7 +60,7 @@ class App extends Component {
             }
             { cookies.getBoolean(properties.cookies.administratorMode) &&
               <h2>
-                <Link to="/settings"><i class="bi bi-gear text-white settings-icon"></i></Link>
+                <Link to={{pathname: "/settings", hash: window.location.hash }}><i class="bi bi-gear text-white settings-icon"></i></Link>
               </h2>
             }
           </main>

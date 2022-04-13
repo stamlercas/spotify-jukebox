@@ -67,8 +67,7 @@ var fetchData = function(url, method = 'GET', body = {}) {
         if (res.status == 204) {
             return Promise.resolve(res);
         } else if (res.status >= 400) {
-            console.log('reject');
-            Promise.reject(res.json().message);
+            return Promise.reject(res.statusText);
         }
         return res.json();
     })
@@ -85,7 +84,7 @@ var composeFetch = function(url, method, body) {
     if (method === 'GET') {
         return fetch(url, {
             headers: {
-                'player-id': 'test'
+                'player-id': window.location.hash.substring(1, window.location.hash.length)
             }
         });
     } else {
@@ -95,7 +94,7 @@ var composeFetch = function(url, method, body) {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    'player-id': 'test'
+                    'player-id': window.location.hash.substring(1, window.location.hash.length)
                 },
                 body: JSON.stringify(body)
             });

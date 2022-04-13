@@ -13,7 +13,7 @@ import ease from '../util/easing'
  */
 export default class Sync {
   constructor ({
-    currentlyPlaying, trackAnalysis, trackFeatures,
+    currentlyPlaying, trackAnalysis, trackFeatures, playerId,
     volumeSmoothing = 100,
     pingDelay = 2500
   } = {}) {
@@ -22,7 +22,8 @@ export default class Sync {
         currentlyPlaying,
         trackAnalysis,
         trackFeatures,
-        pingDelay
+        pingDelay,
+        headers: {"player-id": playerId}
       },
       intervalTypes: ['tatums', 'segments', 'beats', 'bars', 'sections'],
       activeIntervals: Observe({
@@ -121,8 +122,8 @@ export default class Sync {
   async getTrackInfo (data) {
     const tick = window.performance.now()
     const [ analysis, features ] = await Promise.all([
-      get(this.state.api.trackAnalysis + data.item.id).then(res => {console.log(res.data); return res.data}),
-      get(this.state.api.trackFeatures + data.item.id).then(res => {console.log(res.data); return res.data}),
+      get(this.state.api.trackAnalysis + data.item.id, { headers: this.state.api.headers }).then(res => {console.log(res.data); return res.data}),
+      get(this.state.api.trackFeatures + data.item.id, { headers: this.state.api.headers }).then(res => {console.log(res.data); return res.data}),
     ])
 
     this.state.intervalTypes.forEach((t) => {
