@@ -66,6 +66,9 @@ var fetchData = function(url, method = 'GET', body = {}) {
     return composeFetch(url, method, body).then(res => {
         if (res.status == 204) {
             return Promise.resolve(res);
+        } else if (res.status >= 400) {
+            console.log('reject');
+            Promise.reject(res.json().message);
         }
         return res.json();
     })
@@ -73,21 +76,26 @@ var fetchData = function(url, method = 'GET', body = {}) {
         if (res.hasOwnProperty('redirectUrl')) {
             window.location.href = res.redirectUrl;
             throw new Error(res.message);
-        }
+        } 
         return res;
     });
 }
 
 var composeFetch = function(url, method, body) {
     if (method === 'GET') {
-        return fetch(url);
+        return fetch(url, {
+            headers: {
+                'player-id': 'test'
+            }
+        });
     } else {
         return fetch(url, 
             { 
                 method: method,
                 headers: {
                     'Accept': 'application/json',
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'player-id': 'test'
                 },
                 body: JSON.stringify(body)
             });

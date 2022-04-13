@@ -10,6 +10,7 @@ var logger = require('morgan');
 var http = require('http');
 var cron = require('node-cron');
 var spotifyPlayerMap = new Map();
+var SpotifyPlayer = require('./player/SpotifyPlayer.js');
 
 // socket.io stuff
 let port = 3001;
@@ -34,7 +35,7 @@ io.on("connection", (socket) => {
 
 const getNowPlayingAndEmit = socket => {
   // need to have set access token before making any spotify call
-  let spotifyPlayer = spotifyPlayerMap.get('test');
+  let spotifyPlayer = spotifyPlayerMap.get(socket.handshake.query.playerId);
   if (spotifyPlayer && spotifyPlayer.getSpotifyApi().getAccessToken() != undefined) {
   spotifyPlayer.getSpotifyApi().getMyCurrentPlayingTrack()
     .then(result => socket.emit("NowPlaying", JSON.stringify(result)))
@@ -48,6 +49,7 @@ var app = express();
 var apiRouter = require('./routes/api');
 
 app.set('spotifyPlayerMap', spotifyPlayerMap);
+spotifyPlayerMap.set('test', new SpotifyPlayer());
 
 // set up task for refreshing access token every hour. Note this task needs to be started before it will do anything. This will happen whenever an access token is received
 var cronTask = cron.schedule('0 * * * *', () => spotifyPlayerMap.forEach((v, k) => {

@@ -26,7 +26,12 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const socket = socketIOClient(properties.serverUrl + ":3001");
+    const socket = socketIOClient(
+      properties.serverUrl + ":3001", 
+      {
+        query: {
+          playerId: 'test'
+      }});
         socket.on("NowPlaying", response => {
             let data = JSON.parse(response);
             if (!ObjectUtils.isEmpty(data.body)) {

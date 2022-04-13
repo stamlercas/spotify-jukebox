@@ -7,16 +7,30 @@ var spotifyPlayerUtils = require('../util/spotify-player-utils.js');
  * Router level middleware to detect that authorization has been made to use spotify
  */
 router.use(function(req, res, next) {
-  if ((spotifyPlayerUtils.getSpotifyPlayer(req, 'test') == undefined || spotifyPlayerUtils.getSpotifyPlayer(req, 'test').getSpotifyApi().getAccessToken() == undefined)
-      && !req.query.code) {
+  // when request has code this means we are setting the access token and we shouldn't be checking the header
+  if (req.query.code) {
+    next();
+    return;
+  }
+
+  let spotifyPlayer = spotifyPlayerUtils.getSpotifyPlayer(req, req.headers['player-id']);
+
+  // if falsy, send back 406
+  if (!spotifyPlayer) {
+    res.statusCode = 406;
+    res.json({ message: `Player ${req.headers['player-id']} not found` });
+    return;
+  }
+
+  if (spotifyPlayerUtils.getSpotifyPlayer(req).getSpotifyApi().getAccessToken() == undefined) {
     let message = 'No access token found. Redirect to authorization url.';
     console.log(message);
-    req.app.get('spotifyPlayerMap').set('test', new SpotifyPlayer());
-    spotifyPlayerUtils.getSpotifyPlayer(req, 'test').getSpotifyApi().setRedirectURI(req.protocol + '://' + req.get('host') + '/api/setAccessToken');
+
+    spotifyPlayerUtils.getSpotifyPlayer(req).getSpotifyApi().setRedirectURI(req.protocol + '://' + req.get('host') + '/api/setAccessToken');
     // don't redirect, but instruct the client to redirect.  This is an asynchronous call and will only redirect this call not the browser, which is what we want to redirect
     res.json({
       message: message,
-      redirectUrl: spotifyPlayerUtils.getSpotifyPlayer(req, 'test').getSpotifyApi().createAuthorizeURL(spotifyPlayerUtils.getSpotifyPlayer(req, 'test').getScopes(), 'setup')
+      redirectUrl: spotifyPlayerUtils.getSpotifyPlayer(req).getSpotifyApi().createAuthorizeURL(spotifyPlayerUtils.getSpotifyPlayer(req).getScopes(), req.headers['player-id'])
     });
   } else {
     next();
@@ -34,7 +48,7 @@ router.get(['/app', '/app/*'], function(req, res) {
   * Get currently playing track
   */
 router.get('/nowplaying', function(req, res, next) {
-  spotifyPlayerUtils.getSpotifyPlayer(req, 'test').getSpotifyApi().getMyCurrentPlayingTrack()
+  spotifyPlayerUtils.getSpotifyPlayer(req).getSpotifyApi().getMyCurrentPlayingTrack()
     .then(result => res.send.bind(res.send(result)))
     .catch(error => next(error));
 });
@@ -53,11 +67,11 @@ router.get('/search', function(req, res, next) {
   let query = req.query.q;
   let response = {};
 
-  spotifyPlayerUtils.getSpotifyPlayer(req, 'test').getSpotifyApi().searchArtists(query, {limit: 5})
+  spotifyPlayerUtils.getSpotifyPlayer(req).getSpotifyApi().searchArtists(query, {limit: 5})
     .then(result => response.artists = result.body.artists)
-    .then(() => spotifyPlayerUtils.getSpotifyPlayer(req, 'test').getSpotifyApi().searchTracks(query, {limit: 10}))
+    .then(() => spotifyPlayerUtils.getSpotifyPlayer(req).getSpotifyApi().searchTracks(query, {limit: 10}))
     .then(result => response.tracks = result.body.tracks)
-    .then(() => spotifyPlayerUtils.getSpotifyPlayer(req, 'test').getSpotifyApi().searchAlbums(query,{limit: 5}))
+    .then(() => spotifyPlayerUtils.getSpotifyPlayer(req).getSpotifyApi().searchAlbums(query,{limit: 5}))
     .then(result => response.albums = result.body.albums)
     .then(() => res.send.bind(res.send(response)))
     .catch(error => next(error));
@@ -69,11 +83,11 @@ router.get('/search', function(req, res, next) {
 router.get('/artist/:id', function(req, res, next) {
   let id = req.params.id;
   let response = {};
-  spotifyPlayerUtils.getSpotifyPlayer(req, 'test').getSpotifyApi().getArtist(id)
+  spotifyPlayerUtils.getSpotifyPlayer(req).getSpotifyApi().getArtist(id)
     .then(result => response.artist = result.body)
-    .then(() => spotifyPlayerUtils.getSpotifyPlayer(req, 'test').getSpotifyApi().getArtistTopTracks(id, 'US'))
+    .then(() => spotifyPlayerUtils.getSpotifyPlayer(req).getSpotifyApi().getArtistTopTracks(id, 'US'))
     .then(result => response.top_tracks = result.body.tracks)
-    .then(() => spotifyPlayerUtils.getSpotifyPlayer(req, 'test').getSpotifyApi().getArtistAlbums(id, {market: 'US', limit: 50}))  // 50 is max limit
+    .then(() => spotifyPlayerUtils.getSpotifyPlayer(req).getSpotifyApi().getArtistAlbums(id, {market: 'US', limit: 50}))  // 50 is max limit
     .then(result => response.albums = result.body)
     .then(() => res.send.bind(res.send(response)))
     .catch(error => next(error));
@@ -84,7 +98,7 @@ router.get('/artist/:id', function(req, res, next) {
  */
 router.get('/album/:id', function(req, res, next) {
   let id = req.params.id;
-  spotifyPlayerUtils.getSpotifyPlayer(req, 'test').getSpotifyApi().getAlbum(id)
+  spotifyPlayerUtils.getSpotifyPlayer(req).getSpotifyApi().getAlbum(id)
     .then(result => res.send.bind(res.send(result.body)))
     .catch(error => next(error));
 });
@@ -101,11 +115,11 @@ router.post('/queue', function(req, res, next) {
   }
 
   let uri = req.body.track.uri;
-  spotifyPlayerUtils.getSpotifyPlayer(req, 'test').getSpotifyApi().addToQueue(uri, { device_id: spotifyPlayerUtils.getSpotifyPlayer(req, 'test').getDeviceId() })
+  spotifyPlayerUtils.getSpotifyPlayer(req).getSpotifyApi().addToQueue(uri, { device_id: spotifyPlayerUtils.getSpotifyPlayer(req).getDeviceId() })
     .then(result => {
-      if (spotifyPlayerUtils.getSpotifyPlayer(req, 'test').getIsFirstSongQueued()) { // do some more setup, skip to next (which is the one just queued) and play from selected available device
-        spotifyPlayerUtils.getSpotifyPlayer(req, 'test').getSpotifyApi().skipToNext(); // this should automatically start playing
-        spotifyPlayerUtils.getSpotifyPlayer(req, 'test').setIsFirstSongQueued(false);
+      if (spotifyPlayerUtils.getSpotifyPlayer(req).getIsFirstSongQueued()) { // do some more setup, skip to next (which is the one just queued) and play from selected available device
+        spotifyPlayerUtils.getSpotifyPlayer(req).getSpotifyApi().skipToNext(); // this should automatically start playing
+        spotifyPlayerUtils.getSpotifyPlayer(req).setIsFirstSongQueued(false);
       }
 
       // log the song queued
@@ -130,7 +144,7 @@ router.post('/queue', function(req, res, next) {
  * Get available devices.
  */
 router.get('/devices', function(req, res, next) {
-  spotifyPlayerUtils.getSpotifyPlayer(req, 'test').getSpotifyApi().getMyDevices()
+  spotifyPlayerUtils.getSpotifyPlayer(req).getSpotifyApi().getMyDevices()
     .then(result => res.send.bind(res.send(result.body.devices)))
     .catch(error => next(error));
 });
@@ -145,15 +159,15 @@ router.post('/devices', function(req, res, next) {
     return;
   }
   let deviceId = req.body.deviceId;
-  spotifyPlayerUtils.getSpotifyPlayer(req, 'test').setDeviceId(deviceId);
-  spotifyPlayerUtils.getSpotifyPlayer(req, 'test').getSpotifyApi().transferMyPlayback([deviceId]).then(res => console.log('Set device: ' + deviceId));
+  spotifyPlayerUtils.getSpotifyPlayer(req).setDeviceId(deviceId);
+  spotifyPlayerUtils.getSpotifyPlayer(req).getSpotifyApi().transferMyPlayback([deviceId]).then(res => console.log('Set device: ' + deviceId));
 
   res.statusCode = 204;
   res.end();
 });
 
 router.post('/reset', function(req, res, next) {
-  spotifyPlayerUtils.getSpotifyPlayer(req, 'test').reset();
+  spotifyPlayerUtils.getSpotifyPlayer(req).reset();
 
   res.statusCode = 204;
   res.end();
@@ -161,14 +175,14 @@ router.post('/reset', function(req, res, next) {
 
 router.get('/audio-analysis/:id', function(req, res, next) {
   let id = req.params.id;
-  spotifyPlayerUtils.getSpotifyPlayer(req, 'test').getSpotifyApi().getAudioAnalysisForTrack(id)
+  spotifyPlayerUtils.getSpotifyPlayer(req).getSpotifyApi().getAudioAnalysisForTrack(id)
     .then(result => res.send.bind(res.send(result.body)))
     .catch(error => next(error));
 });
 
 router.get('/track-features/:id', function(req, res, next) {
   let id = req.params.id;
-  spotifyPlayerUtils.getSpotifyPlayer(req, 'test').getSpotifyApi().getAudioFeaturesForTrack(id)
+  spotifyPlayerUtils.getSpotifyPlayer(req).getSpotifyApi().getAudioFeaturesForTrack(id)
     .then(result => res.send.bind(res.send(result.body)))
     .catch(error => next(error));
 });
@@ -178,7 +192,8 @@ router.get('/track-features/:id', function(req, res, next) {
  * Once done, redirect back to home page.
  */
 router.get('/setAccessToken', function(req, res) {
-  spotifyPlayerUtils.getSpotifyPlayer(req, 'test').getSpotifyApi().authorizationCodeGrant(req.query.code).then(
+  let playerId = req.query.state;
+  spotifyPlayerUtils.getSpotifyPlayer(req, playerId).getSpotifyApi().authorizationCodeGrant(req.query.code).then(
     function(data) {
       // hide token values
       let maskString = string => string.substring(0, 32) + 
@@ -189,11 +204,11 @@ router.get('/setAccessToken', function(req, res) {
       console.log('The refresh token is ' + maskString(data.body['refresh_token']));
   
       // Set the access token on the API object to use it in later calls
-      spotifyPlayerUtils.getSpotifyPlayer(req, 'test').getSpotifyApi().setAccessToken(data.body['access_token']);
-      spotifyPlayerUtils.getSpotifyPlayer(req, 'test').getSpotifyApi().setRefreshToken(data.body['refresh_token']);
+      spotifyPlayerUtils.getSpotifyPlayer(req, playerId).getSpotifyApi().setAccessToken(data.body['access_token']);
+      spotifyPlayerUtils.getSpotifyPlayer(req, playerId).getSpotifyApi().setRefreshToken(data.body['refresh_token']);
 
       // response does not depend on the next calls so can call them while response is redirected
-      spotifyPlayerUtils.getSpotifyPlayer(req, 'test').getSpotifyApi().pause().catch(error => console.log(error));
+      spotifyPlayerUtils.getSpotifyPlayer(req, playerId).getSpotifyApi().pause().catch(error => console.log(error));
 
       res.redirect(req.protocol + '://' + req.get('host') + '/?activation_success=true');
     },
