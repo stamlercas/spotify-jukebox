@@ -13,6 +13,8 @@ var spotifyPlayerMap = new Map();
 var SpotifyPlayer = require('./player/SpotifyPlayer.js');
 var WordUtils = require('./util/word-utils.js');
 
+require('dotenv').config();
+
 // socket.io stuff
 let port = 3001;
 const server = http.createServer(app);

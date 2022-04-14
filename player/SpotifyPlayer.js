@@ -50,8 +50,8 @@ var init = function(self) {
     self._isFirstSongQueued = true;
     self._deviceId = null;
     self._spotifyApi = new SpotifyWebApi({
-        clientId: 'd143076b396b41d5a9b0b8cc10f7ea7c',
-        clientSecret: 'bc3f6d91473f46ada5d6749d3be495a3',
+        clientId: process.env.SPOTIFY_CLIENT_ID,
+        clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
         redirectUri: ''
     });
     self._scopes = [
