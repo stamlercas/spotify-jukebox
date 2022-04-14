@@ -1,5 +1,14 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  .cover-container.d-flex.h-100.p-3.mx-auto.flex-column
+    header.masthead.mb-auto
+      .inner 
+        h3.masthead-brand Spotify Jukebox
+    main(role="main").inner.cover
+      h1.cover-heading Play and share music.
+      p.lead Create a space to share and play music.
+      p.lead
+        a(href="/create").btn.btn-lg.btn-secondary Create 
+    footer.mastfoot.mt-auto 
+      .inner

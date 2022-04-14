@@ -9,6 +9,7 @@ var SpotifyPlayer = function() {
 
 SpotifyPlayer.prototype = {
     getSpotifyApi: function() {
+        this._expiration = Date.now() + TIME_TO_LIVE;   // every time api is accessed, set expiration to 6 hours from now
         return this._spotifyApi;
     },
 
@@ -32,6 +33,14 @@ SpotifyPlayer.prototype = {
         this._deviceId = deviceId;
     },
 
+    /**
+     * Return whether or not the expiration has passed (meaning the api hasn't been accessed in a substantial amount of time).
+     * @returns boolean
+     */
+    isExpired: function() {
+        return Date.now() > this._expiration;
+    },
+
     reset: function () {
         init(this);
     }
@@ -49,7 +58,11 @@ var init = function(self) {
         'user-modify-playback-state',
         'user-read-playback-state'
     ];
+    self._expiration = Date.now() + TIME_TO_LIVE;
 }
+
+// TODO: move to properties file
+const TIME_TO_LIVE = (1000 * 60 * 60 * 6);
 
 // should check to see if this actually works
 SpotifyPlayer._addMethods = function(methods) {
@@ -60,4 +73,4 @@ SpotifyPlayer._addMethods = function(methods) {
     }
 };
 
-module.exports = SpotifyPlayer
+module.exports = SpotifyPlayer;

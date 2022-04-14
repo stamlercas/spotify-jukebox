@@ -51,6 +51,11 @@ class NowPlaying extends Component {
         let queryParameters = queryStringParser.parse(this.props.location.search);
         if (queryParameters.activation_success) {   // server side was just activated, so prompt to select available devices
             this.toggleModal();
+            // give the user a nice clean url to share
+            this.props.history.push({
+                pathname: "/",
+                hash: window.location.hash
+            });
         }
         if (queryParameters.track_queued) {
             this.setState({showTrackQueuedAlert: true});

@@ -53,14 +53,19 @@ app.set('spotifyPlayerMap', spotifyPlayerMap);
 
 // set up task for refreshing access token every hour. Note this task needs to be started before it will do anything. This will happen whenever an access token is received
 var cronTask = cron.schedule('0 * * * *', () => spotifyPlayerMap.forEach((v, k) => {
-  v.getSpotifyApi().refreshAccessToken().then(
-    (data) => {
-      console.log(`The access token has been refreshed for ${k}!`);
-      // Save the access token so that it's used in future calls
-      v.getSpotifyApi().setAccessToken(data.body['access_token']);
-    },
-    (err) => console.log('Could not refresh access token', err)
-  )
+  if (v.isExpired()) {
+    console.log(`Spotify instance ${k} has expired...`);
+    spotifyPlayerMap.delete(k);
+  } else {
+    v.getSpotifyApi().refreshAccessToken().then(
+      (data) => {
+        console.log(`The access token has been refreshed for ${k}!`);
+        // Save the access token so that it's used in future calls
+        v.getSpotifyApi().setAccessToken(data.body['access_token']);
+      },
+      (err) => console.log('Could not refresh access token', err)
+    )
+  }
 }));
 
 // view engine setup
@@ -75,19 +80,30 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api', apiRouter);
 
+app.get('/', function(req, res, next) {
+  res.render('index');
+});
+
 /**
  * Create new spotify instance, and redirect user.
  */
 app.get('/create', function(req, res, next) {
   let playerId = WordUtils.generateRandomWords(3);
   spotifyPlayerMap.set(playerId, new SpotifyPlayer());
-
-  res.redirect(`${req.protocol}://${req.get('host')}/#${playerId}`);
+  console.log(`New spotify instance created: ${playerId}`);
+  res.redirect(`${req.protocol}://${req.get('host')}/app/#${playerId}`);
 });
 
-app.use(function(req, res, next) {
+/**
+ * For opening up react app
+ */
+ app.get(['/app', '/app/*'], function(req, res) {
   res.sendFile(path.join(__dirname, 'public', 'app.html'));
  });
+
+// app.use(function(req, res, next) {
+//   res.sendFile(path.join(__dirname, 'public', 'app.html'));
+//  });
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
