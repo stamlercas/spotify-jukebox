@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "build": "cd client && npm run-script build && cd .. && mkdir -p public && cp -R client/build/* public/ && mv public/index.html public/app.html"
+    "build": "sh build.sh",
+    "postinstall": "cd client && npm install"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
