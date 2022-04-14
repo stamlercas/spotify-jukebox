@@ -181,7 +181,7 @@ class NowPlaying extends Component {
                 <div class="track-display">
                     {this.getDisplay()}
                 </div>
-                <AvailableDeviceModal show={this.state.showModal} close={this.toggleModal} />
+                <AvailableDeviceModal show={this.state.showModal} close={this.toggleModal} closeable={false} />
             </div>
         )
     }

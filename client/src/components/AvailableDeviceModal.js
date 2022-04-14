@@ -91,7 +91,7 @@ class AvailableDeviceModal extends Component {
                     <Button variant="dark" onClick={this.getDevices}>
                     Refresh Devices
                     </Button>
-                    <Button variant="secondary" onClick={this.props.close}>
+                    <Button variant="secondary" onClick={this.props.close} disabled={this.props.closeable === false} >
                     Close
                     </Button>
                     <Button variant="primary" onClick={this.selectDevice}>
