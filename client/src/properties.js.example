@@ -1,5 +1,4 @@
 export const properties = {
-    serverUrl: 'http://',
     degreeUpdater: {
         degree: 0,
         maxDegree: 22.5,

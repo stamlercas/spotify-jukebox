@@ -14,13 +14,40 @@ var http = require('http');
 
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
-console.log(`Starting web server on port ${port}`);
 
 /**
  * Create HTTP server.
  */
 
 var server = http.createServer(app);
+
+const io = require('socket.io')(server, {
+  cors: {
+    origin: "*"
+  }
+});
+io.on("connection", (socket) => {
+  let interval;
+  let ip = socket.handshake.address;
+  console.log(`${ip} connected`);
+  
+  interval = setInterval(() => getNowPlayingAndEmit(socket), 1000);
+
+  socket.on("disconnect", () => {
+    console.log(`${ip} disconnected`);
+    clearInterval(interval);
+  });
+});
+
+const getNowPlayingAndEmit = socket => {
+  // need to have set access token before making any spotify call
+  let spotifyPlayer = app.get('spotifyPlayerMap').get(socket.handshake.query.playerId);
+  if (spotifyPlayer && spotifyPlayer.getSpotifyApi().getAccessToken() != undefined) {
+  spotifyPlayer.getSpotifyApi().getMyCurrentPlayingTrack()
+    .then(result => socket.emit("NowPlaying", JSON.stringify(result)))
+    .catch(error => console.log('Error while retrieving now playing info in socket.io'))
+  }
+};
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -29,6 +56,8 @@ var server = http.createServer(app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
+
+console.log(`Starting web server on port ${port}`);
 
 /**
  * Normalize a port into a number, string, or false.

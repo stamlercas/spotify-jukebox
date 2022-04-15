@@ -29,8 +29,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const socket = socketIOClient(
-      properties.serverUrl + ":3001", 
+    const socket = socketIOClient( 
       {
         query: {
           playerId: SpotifyPlayerUtils.getPlayerId()

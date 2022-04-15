@@ -7,44 +7,12 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var http = require('http');
 var cron = require('node-cron');
 var spotifyPlayerMap = new Map();
 var SpotifyPlayer = require('./player/SpotifyPlayer.js');
 var WordUtils = require('./util/word-utils.js');
 
 require('dotenv').config();
-
-// socket.io stuff
-let port = 3001;
-const server = http.createServer(app);
-const io = require("socket.io")(server, {
-  cors: {
-    origin: "*"
-  }
-});
-server.listen(port, () => console.log(`Listening on port ${port}`));
-
-io.on("connection", (socket) => {
-  let interval;
-  let ip = socket.handshake.address;
-  console.log(`${ip} connected`);
-  interval = setInterval(() => getNowPlayingAndEmit(socket), 1000);
-  socket.on("disconnect", () => {
-    console.log(`${ip} disconnected`);
-    clearInterval(interval);
-  });
-});
-
-const getNowPlayingAndEmit = socket => {
-  // need to have set access token before making any spotify call
-  let spotifyPlayer = spotifyPlayerMap.get(socket.handshake.query.playerId);
-  if (spotifyPlayer && spotifyPlayer.getSpotifyApi().getAccessToken() != undefined) {
-  spotifyPlayer.getSpotifyApi().getMyCurrentPlayingTrack()
-    .then(result => socket.emit("NowPlaying", JSON.stringify(result)))
-    .catch(error => console.log('Error while retrieving now playing info in socket.io'))
-  }
-};
 
 // continue with app setup stuff
 var app = express();
