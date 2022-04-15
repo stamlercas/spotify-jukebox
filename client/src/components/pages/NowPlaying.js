@@ -59,6 +59,11 @@ class NowPlaying extends Component {
         }
         if (queryParameters.track_queued) {
             this.setState({showTrackQueuedAlert: true});
+            // give the user a nice clean url to share
+            this.props.history.push({
+                pathname: "/",
+                hash: window.location.hash
+            });
         }
         
         this.degreeUpdater = new DegreeUpdater();
