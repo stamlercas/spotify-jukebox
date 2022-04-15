@@ -65,6 +65,19 @@ app.get('/create', function(req, res, next) {
 });
 
 /**
+ * Retrieve info on active instances. Protected by a key stored in environment variable
+ */
+app.get('/info', function(req, res, next) {
+  if (req.headers["admin-key"] === process.env.ADMIN_KEY) {
+    let instances = [];
+    spotifyPlayerMap.forEach((v, k) => instances.push({id: k, expires: new Date(v._expiration)}));
+    res.send(instances);
+  } else {
+    next(createError(404));
+  }
+});
+
+/**
  * For opening up react app
  */
  app.get(['/app', '/app/*'], function(req, res) {
