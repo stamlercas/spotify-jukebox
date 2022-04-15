@@ -10,5 +10,5 @@ export const properties = {
         visualizationEnabled: 'VISUALIZATION_ENABLED',
         administratorMode: 'ADMIN_MODE'
     },
-    songThresholdDuration: 10   // duration is in minutes
+    songThresholdDuration: 10
 };
