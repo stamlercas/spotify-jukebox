@@ -8,8 +8,10 @@ var SpotifyPlayer = function() {
 }
 
 SpotifyPlayer.prototype = {
-    getSpotifyApi: function() {
-        this._expiration = Date.now() + TIME_TO_LIVE;   // every time api is accessed, set expiration to 6 hours from now
+    getSpotifyApi: function(updateExpiration = true) {
+        if (updateExpiration) {
+            this._expiration = Date.now() + TIME_TO_LIVE;   // every time api is accessed, set expiration to 6 hours from now
+        }
         return this._spotifyApi;
     },
 

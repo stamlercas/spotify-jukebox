@@ -27,11 +27,11 @@ var cronTask = cron.schedule('0 * * * *', () => spotifyPlayerMap.forEach((v, k) 
     console.log(`Spotify instance ${k} has expired...`);
     spotifyPlayerMap.delete(k);
   } else {
-    v.getSpotifyApi().refreshAccessToken().then(
+    v.getSpotifyApi(false).refreshAccessToken().then(
       (data) => {
         console.log(`The access token has been refreshed for ${k}!`);
         // Save the access token so that it's used in future calls
-        v.getSpotifyApi().setAccessToken(data.body['access_token']);
+        v.getSpotifyApi(false).setAccessToken(data.body['access_token']);
       },
       (err) => console.log('Could not refresh access token', err)
     )
