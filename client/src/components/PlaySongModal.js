@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withRouter } from 'react-router-dom';
 import { Button, Modal }from 'react-bootstrap';
 import SignatureFormInput from './SignatureFormInput.js';
 import TrackDisplay from './TrackDisplay.js';
@@ -45,7 +46,11 @@ class PlaySongModal extends Component {
         if (canPlay) {
             ServerApiClient.addToQueue(this.props.track).then(() => {
                 this.props.close();
-                window.location.href = `/app/?track_queued=true${window.location.hash}`;
+                this.props.history.push({
+                    pathname: "/",
+                    search: "?track_queued=true",
+                    hash: window.location.hash
+                });
             });
         }
     }
@@ -117,4 +122,4 @@ class PlaySongModal extends Component {
     }
 }
 
-export default PlaySongModal;
+export default withRouter(PlaySongModal);
