@@ -80,7 +80,7 @@ router.get('/artist/:id', function(req, res, next) {
     .then(result => response.artist = result.body)
     .then(() => spotifyPlayerUtils.getSpotifyPlayer(req).getSpotifyApi().getArtistTopTracks(id, 'US'))
     .then(result => response.top_tracks = result.body.tracks)
-    .then(() => spotifyPlayerUtils.getSpotifyPlayer(req).getSpotifyApi().getArtistAlbums(id, {market: 'US', limit: 50}))  // 50 is max limit
+    .then(() => spotifyPlayerUtils.getSpotifyPlayer(req).getSpotifyApi().getArtistAlbums(id, {market: 'US', limit: 50, include_groups: "album,single,compilation"}))  // 50 is max limit
     .then(result => response.albums = result.body)
     .then(() => res.send.bind(res.send(response)))
     .catch(error => next(error));
