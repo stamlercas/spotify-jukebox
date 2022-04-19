@@ -1,4 +1,5 @@
 var express = require('express');
+const createError = require('http-errors');
 var router = express.Router();
 var SpotifyPlayer = require('../player/SpotifyPlayer.js');
 var spotifyPlayerUtils = require('../util/spotify-player-utils.js');
@@ -18,7 +19,7 @@ router.use(function(req, res, next) {
   // if falsy, send back 404
   if (!spotifyPlayer) {
     res.statusCode = 404;
-    res.json({ message: `Player ${req.headers['player-id']} not found` });
+    next({ message: `Player ${req.headers['player-id']} not found` });
     return;
   }
 
@@ -212,7 +213,7 @@ router.get('/setAccessToken', function(req, res) {
 
 // error handler
 router.use(function(err, req, res, next) {
-  res.status(err.status || 500);
+  res.status(res.statusCode || 500);
   res.json(err);
 });
 

@@ -68,6 +68,9 @@ var fetchData = function(url, method = 'GET', body = {}) {
     return composeFetch(url, method, body).then(res => {
         if (res.status == 204) {
             return Promise.resolve(res);
+        } else if (res.status == 404) {
+            window.location.href = '/404';
+            return Promise.reject(res.statusText);
         } else if (res.status >= 400) {
             return Promise.reject(res.statusText);
         }
