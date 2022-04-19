@@ -210,5 +210,11 @@ router.get('/setAccessToken', function(req, res) {
     });
 });
 
+// error handler
+router.use(function(err, req, res, next) {
+  res.status(err.status || 500);
+  res.json(err);
+});
+
 
 module.exports = router;
