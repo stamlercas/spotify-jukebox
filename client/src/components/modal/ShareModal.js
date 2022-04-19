@@ -23,7 +23,7 @@ class ShareModal extends Component {
                     <Modal.Title>Share</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <div>
+                    <div class="mb-4">
                         <div class="row">
                             <div class="col-10 text-clipboard">{window.location.href}</div>
                             <div class="col-2">
@@ -31,7 +31,6 @@ class ShareModal extends Component {
                             </div>
                         </div>
                     </div>
-                    <br />
                     <QRCodeSVG value={window.location.href} height="100%" width="100%" />
                 </Modal.Body>
                 <Modal.Footer>
