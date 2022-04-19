@@ -69,6 +69,8 @@ class NowPlaying extends Component {
         this.degreeUpdater = new DegreeUpdater();
 
         this.visualization = this.getVisualization();
+
+        this.setNowPlayingSong(this.props.data);
     }
 
     componentWillUnmount() {
