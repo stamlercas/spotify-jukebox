@@ -41,13 +41,15 @@ class TrackDisplay extends Component {
                     <div class="col-2"></div>
                 </div>
                 <div class="text-center">
-                    <h4 class="band-title">{artists}</h4>
-                </div>
-                <div class="text-center">
-                    {albumName}
-                </div>
-                <div class="text-center">
-                    {track}
+                    <div>
+                        <h4 class="band-title">{artists}</h4>
+                    </div>
+                    <div>
+                        {albumName}
+                    </div>
+                    <div>
+                        {track}
+                    </div>
                 </div>
             </div>
         );
