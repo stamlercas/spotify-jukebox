@@ -1,3 +1,5 @@
+import SpotifyPlayerUtils from "../util/SpotifyPlayerUtils.js";
+
 /**
  * Will return a json response for calls made to server
  */
@@ -84,7 +86,7 @@ var composeFetch = function(url, method, body) {
     if (method === 'GET') {
         return fetch(url, {
             headers: {
-                'player-id': window.location.hash.substring(1, window.location.hash.length)
+                'player-id': SpotifyPlayerUtils.getPlayerId()
             }
         });
     } else {
@@ -94,7 +96,7 @@ var composeFetch = function(url, method, body) {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    'player-id': window.location.hash.substring(1, window.location.hash.length)
+                    'player-id': SpotifyPlayerUtils.getPlayerId()
                 },
                 body: JSON.stringify(body)
             });
@@ -102,4 +104,4 @@ var composeFetch = function(url, method, body) {
 }
 
 
-module.exports = new ServerApiClient();
+export default new ServerApiClient();

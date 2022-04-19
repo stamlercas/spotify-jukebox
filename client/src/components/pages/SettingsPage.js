@@ -22,7 +22,7 @@ class SettingsPage extends Component {
             document.getElementById('admin-mode-switch').setAttribute('disabled', true);
             this.setState(prevState => ({
                     alerts: [(isSuccess
-                        ? <Alert type="success" text='App reset successfully! Return to <a href="/">home page</a> to set up app.'/>
+                        ? <Alert type="success" text={`App reset successfully! Return to <a href="/app/${window.location.hash}">home page</a> to set up app.`}/>
                         : <Alert type="danger" text="<strong>Woah..</strong> Something went seriously wrong!"/>), prevState.alerts]
             }));
         });
@@ -68,7 +68,7 @@ class SettingsPage extends Component {
 
                 { cookies.getBoolean(properties.cookies.administratorMode) &&
                     <ul class="list-group">
-                        <li class="list-group-item"><a href="#" onClick={this.reset}>Reset</a></li>
+                        <li class="list-group-item"><a href={window.location.hash} onClick={this.reset}>Reset</a></li>
                     </ul>
                 }
             </div>
