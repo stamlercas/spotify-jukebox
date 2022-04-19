@@ -87,5 +87,12 @@ html
         color: rgba(255, 255, 255, .5);
       }
 
-  body
-    block content
+  body.cover-container.d-flex.h-100.p-3.mx-auto.flex-column
+    header.masthead.mb-auto
+      .inner 
+        h3.masthead-brand
+          a(href="/") Spotify Jukebox
+    main(role="main").inner.cover
+      block content
+    footer.mastfoot.mt-auto 
+      .inner
