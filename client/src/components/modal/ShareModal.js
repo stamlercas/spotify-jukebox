@@ -23,7 +23,7 @@ class ShareModal extends Component {
                     <Modal.Title>Share</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <div class="mb-4">
+                    <div>
                         <div class="row">
                             <div class="col-10 text-clipboard">{window.location.href}</div>
                             <div class="col-2">
