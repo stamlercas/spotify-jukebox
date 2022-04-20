@@ -115,8 +115,12 @@
     border-radius: 0.25rem;
 }
 
+.btn-clipboard-container {
+    padding: 0;
+}
+
 .text-clipboard {
-    padding-top: 5px;
+    padding-top: 1rem;
 }
 
 .clipboard-container {
