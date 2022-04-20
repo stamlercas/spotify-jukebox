@@ -204,7 +204,7 @@ router.get('/setAccessToken', function(req, res) {
       // response does not depend on the next calls so can call them while response is redirected
       spotifyPlayerUtils.getSpotifyPlayer(req, playerId).getSpotifyApi().pause().catch(error => console.log(error));
 
-      res.redirect(`${req.protocol}://${req.get('host')}/app/?activation_success=true#${playerId}`);
+      res.redirect(`/app/?activation_success=true#${playerId}`);
     },
     function(err) {
       console.log('Something went wrong!', err);

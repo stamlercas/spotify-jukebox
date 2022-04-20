@@ -42,6 +42,17 @@ var cronTask = cron.schedule('0 * * * *', () => spotifyPlayerMap.forEach((v, k) 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+/**
+ * redirect any page from http to https
+ */
+ app.use((req, res, next) => {
+  if (req.app.get('env') !== 'development' && req.app.get('env') !== 'test' && !isSecure(req)) {
+    res.redirect(301, `https://${req.headers.host}${req.url}`);
+  } else {
+    next();
+  }
+});
+
 app.use(logger('short'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -103,5 +114,17 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+/**
+ * req.secure will return always false if there is a load balancer that redirects internally through HTTP
+ * @param req express http request
+ * @returns true if the http request is secure (comes form https)
+ */
+ function isSecure(req) {
+  if (req.headers['x-forwarded-proto']) {
+    return req.headers['x-forwarded-proto'] === 'https';
+  }
+  return req.secure;
+};
 
 module.exports = app;
