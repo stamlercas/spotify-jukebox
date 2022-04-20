@@ -108,7 +108,7 @@
 }
 
 .btn-clipboard {
-    padding: 0.5em 0.75em 0.625em;
+    /* padding: 0.5em 0.75em 0.625em; */
     line-height: 1;
     color: #212529;
     border: 0;
@@ -117,4 +117,8 @@
 
 .text-clipboard {
     padding-top: 5px;
+}
+
+.clipboard-container {
+    padding-bottom: 20px;
 }

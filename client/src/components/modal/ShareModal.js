@@ -23,9 +23,9 @@ class ShareModal extends Component {
                     <Modal.Title>Share</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <div class="mb-4">
-                        <div class="row">
-                            <div class="col-10 text-clipboard">{window.location.href}</div>
+                    <div class="share-container">
+                        <div class="row bg-light">
+                            <div class="col-10 text-clipboard"><pre>{window.location.href}</pre></div>
                             <div class="col-2">
                                 <button type="button" class="btn btn-clipboard" onClick={this.copy}><i class="bi bi-clipboard"></i></button>
                             </div>
