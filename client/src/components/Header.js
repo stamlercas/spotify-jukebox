@@ -1,5 +1,6 @@
 import { Component } from "react";
 import { Link, withRouter } from 'react-router-dom';
+import LocationUtils from "../util/LocationUtils";
 import ShareModal from "./modal/ShareModal";
 
 class Header extends Component {
@@ -47,7 +48,9 @@ class Header extends Component {
                             </form>
                         </div>
                     </div>
+                    {LocationUtils.isOnHomePage() &&
                     <i onClick={this.toggleModal} class="bi bi-share header-icon"></i>
+                    }
                 </nav>
                 <ShareModal show={this.state.showModal} close={this.toggleModal}/>
             </header>

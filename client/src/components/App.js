@@ -17,8 +17,7 @@ import socketIOClient from "socket.io-client";
 import ObjectUtils from "../util/ObjectUtils";
 import * as cookies from '../spotify-viz/util/cookie.js';
 import SpotifyPlayerUtils from "../util/SpotifyPlayerUtils";
-
-const basename = "app";
+import LocationUtils from "../util/LocationUtils";
 
 class App extends Component {
   constructor(props) {
@@ -44,7 +43,7 @@ class App extends Component {
 
   render() {
     return (
-        <BrowserRouter basename={basename}>
+        <BrowserRouter basename={LocationUtils.BASENAME}>
           <Header />
           <main role="main" class="container app-container">
             <Switch>
@@ -56,7 +55,7 @@ class App extends Component {
                 <NowPlaying data={this.state.data} location={this.props.location} />
               </Route>
             </Switch>
-            {(window.location.pathname !== `/${basename}/` && !ObjectUtils.isEmpty(this.state.data)) &&
+            {(!LocationUtils.isOnHomePage() && !ObjectUtils.isEmpty(this.state.data)) &&
               <StickyTrackDisplay track={this.state.data} />
             }
             { cookies.getBoolean(properties.cookies.administratorMode) &&
