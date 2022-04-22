@@ -42,13 +42,13 @@ class TrackDisplay extends Component {
                 </div>
                 <div class="text-center">
                     <div>
-                        <h4 class="band-title">{artists}</h4>
+                        <h4 class="band-title">{track}</h4>
+                    </div>
+                    <div>
+                        {artists}
                     </div>
                     <div>
                         {albumName}
-                    </div>
-                    <div>
-                        {track}
                     </div>
                 </div>
             </div>

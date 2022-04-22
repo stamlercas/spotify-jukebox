@@ -31,8 +31,8 @@ class AlbumListItem extends Component {
                         }
                     </div>
                     <div class="col-9 justify-content-center align-self-center">
-                            <div>{album.name}</div>
-                            <div>{this.props.showArtist && 
+                            <div class="truncated">{album.name}</div>
+                            <div class="truncated">{this.props.showArtist && 
                                 this.renderArtist()
                             }{album.release_date.substring(0, 4)}</div>
                     </div>

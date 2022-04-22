@@ -34,7 +34,7 @@ class StickyTrackDisplay extends TrackDisplay {
                         <div class="col track-vertical-align sticky-track-info">
                             <div class="text-light" style={{overflow: 'hidden'}}>
                                 <div class="truncated">
-                                    {artists} - {track}
+                                    {track} - {artists}
                                 </div>
                                 <div class="truncated">{albumName}</div>
                             </div>
