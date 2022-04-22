@@ -6,8 +6,8 @@ This application is a Node.js/React app that imitates a jukebox and is intended 
 ## Getting Started
 - Verify Node.js is installed.  If not, install Node.js and npm (should come with node installer)
 - Clone this repo to your machine
-- In `client/src`, copy `properties.js.example` and rename to `properties.js`
-    - The server url, should be populated with the host name or ip address of the machine
+- Copy `.env.example` and rename to `.env`
+    - Populate the spotify client id and secret
 - Run the below command to install dependencies for the app
 ```bash
 npm install && cd client && npm install && cd ..
