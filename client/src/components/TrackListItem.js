@@ -26,7 +26,7 @@ class TrackListItem extends Component {
                 <div class="row">
                     <div class="col-2 justify-content-center align-self-center">
                         <span>
-                            <i class="bi bi-play play-icon" data-toggle="modal" onClick={this.toggleModal}></i>
+                            <i class="bi bi-plus play-icon" data-toggle="modal" onClick={this.toggleModal}></i>
                         </span>
                     </div>
                     <div class="col-10 justify-content-center align-self-center">
