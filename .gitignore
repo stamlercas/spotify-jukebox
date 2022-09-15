@@ -117,5 +117,5 @@ dist
 
 client/node_modules/
 client/build/
-public/
+server/public/
 !client/public

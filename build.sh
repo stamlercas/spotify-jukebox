@@ -7,6 +7,6 @@ cd client
 npm run-script build
 
 cd ..
-mkdir -p public
-cp -R client/build/* public/
-mv public/index.html public/app.html
+mkdir -p server/public
+cp -R client/build/* server/public/
+mv server/public/index.html server/public/app.html
