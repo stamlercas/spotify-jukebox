@@ -6,8 +6,5 @@
     "start": "node ./server/bin/www",
     "build": "sh build.sh",
     "postinstall": "cd client && npm install && cd ../server && npm install"
-  },
-  "engines": {
-    "node": "16.x"
   }
 }
