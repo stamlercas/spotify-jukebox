@@ -1,7 +1,7 @@
 /**
  * Keeps track of spotify related stuff
  */
-var SpotifyWebApi = require('spotify-web-api-node');
+var SpotifyWebApi = require('spotify-web-api-nodejs');
 
 var SpotifyPlayer = function() {
     init(this);
@@ -36,6 +36,17 @@ SpotifyPlayer.prototype = {
     },
 
     /**
+     * Store creator from session id
+     */
+    getCreator: function() {
+        return this._creator;
+    },
+
+    setCreator: function(creator) {
+        this._creator = creator;
+    },
+
+    /**
      * Return whether or not the expiration has passed (meaning the api hasn't been accessed in a substantial amount of time).
      * @returns boolean
      */
@@ -51,6 +62,7 @@ SpotifyPlayer.prototype = {
 var init = function(self) {
     self._isFirstSongQueued = true;
     self._deviceId = null;
+    self._creator = null;
     self._spotifyApi = new SpotifyWebApi({
         clientId: process.env.SPOTIFY_CLIENT_ID,
         clientSecret: process.env.SPOTIFY_CLIENT_SECRET,

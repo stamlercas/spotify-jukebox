@@ -11,6 +11,7 @@ var cron = require('node-cron');
 var spotifyPlayerMap = new Map();
 var SpotifyPlayer = require('./player/SpotifyPlayer.js');
 var WordUtils = require('./util/word-utils.js');
+var session = require('express-session');
 
 require('dotenv').config();
 
@@ -21,7 +22,7 @@ var apiRouter = require('./routes/api');
 
 app.set('spotifyPlayerMap', spotifyPlayerMap);
 
-// set up task for refreshing access token every hour. Note this task needs to be started before it will do anything. This will happen whenever an access token is received
+// set up task for refreshing access token every hour
 var cronTask = cron.schedule('0 * * * *', () => spotifyPlayerMap.forEach((v, k) => {
   if (v.isExpired()) {
     console.log(`Spotify instance ${k} has expired...`);
@@ -58,6 +59,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+  resave: false, 
+  secret: process.env.SECRET,
+  cookie: { maxAge: 1209600000 }  // 2 weeks
+}));
 
 app.use('/api', apiRouter);
 
@@ -70,8 +76,12 @@ app.get('/', function(req, res, next) {
  */
 app.get('/create', function(req, res, next) {
   let playerId = WordUtils.generateRandomWords(3);
-  spotifyPlayerMap.set(playerId, new SpotifyPlayer());
-  console.log(`New spotify instance created: ${playerId}`);
+
+  let spotifyPlayer = new SpotifyPlayer();
+  spotifyPlayer.setCreator(req.session.id);
+
+  spotifyPlayerMap.set(playerId, spotifyPlayer);
+  console.log(`New spotify instance created: ${playerId} by ${req.session.id}`);
   res.redirect(`${req.protocol}://${req.get('host')}/app/#${playerId}`);
 });
 

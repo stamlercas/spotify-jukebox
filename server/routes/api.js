@@ -98,6 +98,15 @@ router.get('/album/:id', function(req, res, next) {
 });
 
 /**
+ * Returns a user's queue.
+ */
+router.get('/queue', function(req, res, next) {
+  spotifyPlayerUtils.getSpotifyPlayer(req).getSpotifyApi().getMyQueue()
+    .then(result => res.send.bind(res.send(result.body)))
+    .catch(error => next(error));
+});
+
+/**
  * Adds a track to the queue.
  * Post body must have uri with link to track.
  */
