@@ -18,7 +18,7 @@
 }
 
 .full-screen-display {
-    min-height: calc(100vh - 100px);
+    min-height: calc(100vh - 10px);
 }
 
 .track-vertical-align {
@@ -97,7 +97,7 @@
 }
 
 .app-container {
-    margin-top:80px;
+    margin-top:68px;
     margin-bottom:20px;
 }
 
@@ -125,4 +125,14 @@
 
 .clipboard-container {
     padding-bottom: 20px;
+}
+
+.queue-container {
+    position: relative;
+}
+
+.queue-item {
+    position:absolute;
+    left: 0;
+    top: 0;
 }

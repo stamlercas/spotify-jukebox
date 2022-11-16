@@ -11,6 +11,8 @@ import StickyTrackDisplay from "../StickyTrackDisplay.js";
 import * as cookies from '../../spotify-viz/util/cookie.js';
 import { properties } from "../../properties.js";
 import SpotifyPlayerUtils from "../../util/SpotifyPlayerUtils.js";
+import ServerApiClient from "../../client/ServerApiClient.js";
+import Queue from "../Queue.js";
 
 const queryStringParser = require('query-string');
 
@@ -25,6 +27,7 @@ class NowPlaying extends Component {
         super(props);
         this.state = {
             track: {},
+            queue: {},
             playerState: PlayerState.Loading,
             showModal: false,
             showTrackQueuedAlert: false,
@@ -36,6 +39,7 @@ class NowPlaying extends Component {
         this.setNowPlayingSong = this.setNowPlayingSong.bind(this);
         this.getVisualization = this.getVisualization.bind(this);
         this.initVisualization = this.initVisualization.bind(this);
+        this.getQueue = this.getQueue.bind(this);
     }
 
     toggleModal() {
@@ -65,6 +69,8 @@ class NowPlaying extends Component {
                 hash: window.location.hash
             });
         }
+
+        this.getQueue();
         
         this.degreeUpdater = new DegreeUpdater();
 
@@ -87,7 +93,12 @@ class NowPlaying extends Component {
     componentDidUpdate(prevProps) {
         if (this.props.data !== prevProps.data ) {
             this.setNowPlayingSong(prevProps.data);
+            this.getQueue();
         }
+    }
+
+    getQueue() {
+        ServerApiClient.getQueue().then(res => this.setState({queue: res}));
     }
 
     /**
@@ -176,19 +187,24 @@ class NowPlaying extends Component {
 
     render() {
         return (
-            <div class="now-playing-container">
-                {this.state.showTrackQueuedAlert && 
-                    <div class="alert alert-success alert-dismissible fade show track-queue-alert" role="alert">
-                        Track was added to the queue successfully!
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
+            <div>
+                { !ObjectUtils.isEmpty(this.state.queue) &&
+                    <Queue queue={this.state.queue}/>
                 }
-                <div class="track-display">
-                    {this.getDisplay()}
+                <div class="now-playing-container">
+                    {this.state.showTrackQueuedAlert && 
+                        <div class="alert alert-success alert-dismissible fade show track-queue-alert" role="alert">
+                            Track was added to the queue successfully!
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    }
+                    <div class="track-display">
+                        {this.getDisplay()}
+                    </div>
+                    <AvailableDeviceModal show={this.state.showModal} close={this.toggleModal} closeable={false} />
                 </div>
-                <AvailableDeviceModal show={this.state.showModal} close={this.toggleModal} closeable={false} />
             </div>
         )
     }
