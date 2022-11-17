@@ -118,13 +118,6 @@ class SpotifyManager {
         return Date.now() > this._spotifyRecord.expiration;
     }
 
-    /**
-     * @deprecated spotify api should not be directly access
-     */
-    getSpotifyApi() {
-        return this._spotifyApi;
-    }
-
     getPlayerId() {
         return this._spotifyRecord.playerId;
     }
