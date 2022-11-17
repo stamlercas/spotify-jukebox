@@ -4,39 +4,34 @@
 
 var createError = require('http-errors');
 var express = require('express');
+var session = require('express-session')
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cron = require('node-cron');
-var spotifyPlayerMap = new Map();
-var SpotifyPlayer = require('./player/SpotifyPlayer.js');
-var WordUtils = require('./util/word-utils.js');
+var spotifyManager = require('./manager/spotify-manager.js');
 
 require('dotenv').config();
 
 // continue with app setup stuff
 var app = express();
 
+/**
+ * Database connection
+ */
+ const dbo = require('./db/conn');
+ dbo.connectToServer();
+
 var apiRouter = require('./routes/api');
 
-app.set('spotifyPlayerMap', spotifyPlayerMap);
-
 // set up task for refreshing access token every hour. Note this task needs to be started before it will do anything. This will happen whenever an access token is received
-var cronTask = cron.schedule('0 * * * *', () => spotifyPlayerMap.forEach((v, k) => {
-  if (v.isExpired()) {
-    console.log(`Spotify instance ${k} has expired...`);
-    spotifyPlayerMap.delete(k);
+var cronTask = cron.schedule('0 * * * *', () => spotifyManager.getAllSpotifyPlayers().then(list => list.forEach(spotifyPlayer => {
+  if (spotifyPlayer.isExpired()) {
+    spotifyPlayer.delete();
   } else {
-    v.getSpotifyApi(false).refreshAccessToken().then(
-      (data) => {
-        console.log(`The access token has been refreshed for ${k}!`);
-        // Save the access token so that it's used in future calls
-        v.getSpotifyApi(false).setAccessToken(data.body['access_token']);
-      },
-      (err) => console.log('Could not refresh access token', err)
-    )
+    spotifyPlayer.refreshAccessToken();
   }
-}));
+})));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -52,6 +47,12 @@ app.set('view engine', 'pug');
     next();
   }
 });
+
+app.use(session({
+  resave: false, 
+  secret: process.env.SECRET,
+  cookie: { maxAge: 1209600000 }  // 2 weeks
+}))
 
 app.use(logger('short'));
 app.use(express.json());
@@ -69,9 +70,7 @@ app.get('/', function(req, res, next) {
  * Create new spotify instance, and redirect user.
  */
 app.get('/create', function(req, res, next) {
-  let playerId = WordUtils.generateRandomWords(3);
-  spotifyPlayerMap.set(playerId, new SpotifyPlayer());
-  console.log(`New spotify instance created: ${playerId}`);
+  let playerId = spotifyManager.createNewSpotifyPlayer(req.session.id);
   res.redirect(`${req.protocol}://${req.get('host')}/app/#${playerId}`);
 });
 

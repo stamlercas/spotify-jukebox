@@ -8,6 +8,8 @@ var app = require('../app');
 var debug = require('debug')('spotify-jukebox:server');
 var http = require('http');
 
+var spotifyManager = require('../manager/spotify-manager.js');
+
 /**
  * Get port from environment and store in Express.
  */
@@ -41,12 +43,13 @@ io.on("connection", (socket) => {
 
 const getNowPlayingAndEmit = socket => {
   // need to have set access token before making any spotify call
-  let spotifyPlayer = app.get('spotifyPlayerMap').get(socket.handshake.query.playerId);
-  if (spotifyPlayer && spotifyPlayer.getSpotifyApi().getAccessToken() != undefined) {
-  spotifyPlayer.getSpotifyApi().getMyCurrentPlayingTrack()
-    .then(result => socket.emit("NowPlaying", JSON.stringify(result)))
-    .catch(error => console.log('Error while retrieving now playing info in socket.io'))
-  }
+  spotifyManager.getSpotifyPlayer(socket.handshake.query.playerId).then(spotifyPlayer => {
+    if (spotifyPlayer && spotifyPlayer.getSpotifyApi().getAccessToken() != undefined) {
+    spotifyPlayer.getMyCurrentPlayingTrack()
+      .then(result => socket.emit("NowPlaying", JSON.stringify(result)))
+      .catch(error => console.log('Error while retrieving now playing info in socket.io'))
+    }
+  });
 };
 
 /**
