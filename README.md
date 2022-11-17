@@ -4,7 +4,7 @@
 This application is a Node.js/React app that imitates a jukebox and is intended be used by mobile users exclusively to queue songs to a spotify account.
 
 ## Getting Started
-- Verify Node.js is installed.  If not, install Node.js and npm (should come with node installer)
+- Verify Node.js and MongoDB is installed.  If not, install Node.js and npm (should come with node installer) and install MongoDB.
 - Clone this repo to your machine
 - Copy `.env.example` and rename to `.env`
     - Populate the spotify client id and secret
