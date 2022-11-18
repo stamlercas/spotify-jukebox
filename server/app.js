@@ -20,19 +20,23 @@ var app = express();
 /**
  * Database connection
  */
- const dbo = require('./db/conn');
- dbo.connectToServer();
-
+const dbo = require('./db/conn');
+// do an initial check of spotify instances. This app could theoretically be down for a long time and an instance could lapse
+dbo.connectToServer().then(() => checkSpotifyPlayerExpiration()); 
 var apiRouter = require('./routes/api');
 
 // set up task for refreshing access token every hour. Note this task needs to be started before it will do anything. This will happen whenever an access token is received
-var cronTask = cron.schedule('0 * * * *', () => spotifyManager.getAllSpotifyPlayers().then(list => list.forEach(spotifyPlayer => {
-  if (spotifyPlayer.isExpired()) {
-    spotifyPlayer.delete();
-  } else {
-    spotifyPlayer.refreshAccessToken();
-  }
-})));
+var cronTask = cron.schedule('0 * * * *', () => checkSpotifyPlayerExpiration());
+
+function checkSpotifyPlayerExpiration() {
+  spotifyManager.getAllSpotifyPlayers().then(list => list.forEach(spotifyPlayer => {
+    if (spotifyPlayer.isExpired()) {
+      spotifyPlayer.delete();
+    } else {
+      spotifyPlayer.refreshAccessToken();
+    }
+  }));
+}
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
