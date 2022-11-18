@@ -29,11 +29,11 @@ router.use(function(req, res, next) {
       let message = 'No access token found. Redirect to authorization url.';
       console.log(message);
 
-      spotifyPlayer.getSpotifyApi().setRedirectURI(spotifyPlayerUtils.generateRedirectUri(req));
+      spotifyPlayer.setRedirectURI(spotifyPlayerUtils.generateRedirectUri(req));
       // don't redirect, but instruct the client to redirect.  This is an asynchronous call and will only redirect this call not the browser, which is what we want to redirect
       res.json({
         message: message,
-        redirectUrl: spotifyPlayer.getSpotifyApi().createAuthorizeURL(spotifyPlayerUtils.getScopes(), req.headers['player-id'])
+        redirectUrl: spotifyPlayer.createAuthorizeURL()
       });
     } else {
       if (!spotifyPlayer.getSpotifyRecord().users.includes(req.session.id)) {

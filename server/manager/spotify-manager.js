@@ -1,5 +1,6 @@
 const playerDao = require('../db/player-instances-dao');
 const WordUtils = require('../util/word-utils.js');
+var spotifyPlayerUtils = require('../util/spotify-player-utils.js');
 
 var SpotifyWebApi = require('spotify-web-api-node');
 
@@ -89,6 +90,7 @@ class SpotifyManager {
         return this._spotifyApi.authorizationCodeGrant(code).then(data => {
             // Set the access token on the API object to use it in later calls
             playerDao.update(this._spotifyRecord.playerId, {accessToken: data.body.access_token, refreshToken: data.body.refresh_token})
+            rebuild(this);
             // response does not depend on the next calls so can call them while response is redirected
             this._spotifyApi.pause().catch(error => console.log(error));
             return data;
@@ -122,6 +124,14 @@ class SpotifyManager {
 
     getAccessToken() {
         return this._spotifyRecord.accessToken;
+    }
+
+    setRedirectURI(uri) {
+        this._spotifyApi.setRedirectURI(uri);
+    }
+
+    createAuthorizeURL() {
+        return this._spotifyApi.createAuthorizeURL(spotifyPlayerUtils.getScopes(), this.getPlayerId());
     }
 
 }
