@@ -90,9 +90,10 @@ class SpotifyManager {
         return this._spotifyApi.authorizationCodeGrant(code).then(data => {
             // Set the access token on the API object to use it in later calls
             playerDao.update(this._spotifyRecord.playerId, {accessToken: data.body.access_token, refreshToken: data.body.refresh_token})
-            rebuild(this);
+            .then(() => rebuild(this))
             // response does not depend on the next calls so can call them while response is redirected
-            this._spotifyApi.pause().catch(error => console.log(error));
+            .then(() => this._spotifyApi.pause().catch(error => console.log(error)));
+
             return data;
         })
     }
@@ -176,5 +177,8 @@ function buildSpotifyWebApi(spotifyRecord) {
  * Set new data members
  */
 function rebuild(self) {
-    self._spotifyApi = playerDao.find(self.getPlayerId()).then(spotifyRecord => self._spotifyApi = buildSpotifyWebApi(spotifyRecord));
+    return playerDao.find(self.getPlayerId()).then(spotifyRecord => {
+        self._spotifyRecord = spotifyRecord;
+        self._spotifyApi = buildSpotifyWebApi(spotifyRecord)
+    });
 }
