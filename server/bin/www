@@ -44,7 +44,7 @@ io.on("connection", (socket) => {
 const getNowPlayingAndEmit = socket => {
   // need to have set access token before making any spotify call
   spotifyManager.getSpotifyPlayer(socket.handshake.query.playerId).then(spotifyPlayer => {
-    if (spotifyPlayer && spotifyPlayer.getSpotifyApi().getAccessToken() != undefined) {
+    if (spotifyPlayer && spotifyPlayer.getAccessToken() != undefined) {
     spotifyPlayer.getMyCurrentPlayingTrack()
       .then(result => socket.emit("NowPlaying", JSON.stringify(result)))
       .catch(error => console.log('Error while retrieving now playing info in socket.io'))

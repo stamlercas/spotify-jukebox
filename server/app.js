@@ -10,6 +10,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cron = require('node-cron');
 var spotifyManager = require('./manager/spotify-manager.js');
+var MongoStore = require('connect-mongo');
 
 require('dotenv').config();
 
@@ -49,6 +50,7 @@ app.set('view engine', 'pug');
 });
 
 app.use(session({
+  store: MongoStore.create({ mongoUrl: process.env.MONGO_STORE_CONNECTION_STRING }),
   resave: false, 
   secret: process.env.SECRET,
   cookie: { maxAge: 12096000000 }  // 20 weeks

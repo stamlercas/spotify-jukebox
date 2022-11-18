@@ -1,7 +1,6 @@
 var express = require('express');
 const createError = require('http-errors');
 var router = express.Router();
-var SpotifyPlayer = require('../model/SpotifyPlayer.js');
 var spotifyPlayerUtils = require('../util/spotify-player-utils.js');
 
 var spotifyManager = require('../manager/spotify-manager.js');
@@ -26,7 +25,7 @@ router.use(function(req, res, next) {
 
     res.locals.spotifyPlayer = spotifyPlayer;
 
-    if (spotifyPlayer.getSpotifyApi().getAccessToken() == undefined) {
+    if (spotifyPlayer.getAccessToken() == undefined) {
       let message = 'No access token found. Redirect to authorization url.';
       console.log(message);
 
