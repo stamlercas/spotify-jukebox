@@ -1,6 +1,6 @@
 {
   "name": "server",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "dependencies": {
     "connect-mongo": "^4.6.0",
@@ -19,6 +19,6 @@
     "spotify-web-api-node": "^5.0.2"
   },
   "engines": {
-    "node": "16.x"
+    "node": ">=16 <17"
   }
 }

@@ -119,3 +119,9 @@ client/node_modules/
 client/build/
 server/public/
 !client/public
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+
+.ebextensions/
