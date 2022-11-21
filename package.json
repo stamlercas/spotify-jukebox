@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "start": "node ./server/bin/www",
-    "build": "sh build.sh",
-    "postinstall": "cd client && npm install && cd ../server && npm install"
+    "build": "sh build.sh"
   },
   "engines": {
     "node": ">=16 <17"
-  }
+  },
+  "workspaces": ["./client", "./server"]
 }
