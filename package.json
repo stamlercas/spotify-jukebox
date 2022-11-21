@@ -8,6 +8,6 @@
     "postinstall": "cd client && npm install && cd ../server && npm install"
   },
   "engines": {
-    "node": ">=18 <19"
+    "node": ">=16 <17"
   }
 }
