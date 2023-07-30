@@ -10,7 +10,7 @@ This application is a Node.js/React app that imitates a jukebox and is intended 
     - Populate the spotify client id and secret
 - Run the below command to install dependencies for the app
 ```bash
-npm install && cd client && npm install && cd ..
+npm install
 ```
 - Build the app
 ```bash
