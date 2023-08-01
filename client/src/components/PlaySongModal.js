@@ -5,6 +5,7 @@ import SignatureFormInput from './SignatureFormInput.js';
 import TrackDisplay from './TrackDisplay.js';
 import ServerApiClient from '../client/ServerApiClient.js';
 import { properties } from "../properties.js";
+import Alert from "./Alert.js";
 
 const PlaySongModalState = {
     Play_Song: 'Play song',
@@ -51,6 +52,10 @@ class PlaySongModal extends Component {
                     search: "?track_queued=true",
                     hash: window.location.hash
                 });
+            }).catch(err => {
+                this.setState(prevState => ({
+                    alerts: [<Alert type="danger" text={`${err.message}`}/>, prevState.alerts]
+            }));
             });
         }
     }
@@ -106,6 +111,7 @@ class PlaySongModal extends Component {
                     <Modal.Title>Play this song?</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+                    <div id="alerts">{this.state.alerts}</div>
                     <div id="empty-div"></div>
                     {this.getBody()}
                 </Modal.Body>
