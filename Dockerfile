@@ -1,6 +1,8 @@
+ARG port 3000
+
 FROM node:18
 
-ENV PORT=8080
+ENV PORT=${port}
 
 WORKDIR /usr/src/app
 
@@ -19,7 +21,7 @@ RUN npm install
 COPY . .
 
 # binds to port 8080 to have it mapped by the docker daemon
-EXPOSE 8080
+EXPOSE ${port}
 
 RUN npm run build
 CMD ["npm", "start"]
