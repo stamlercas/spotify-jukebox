@@ -52,7 +52,7 @@ class SpotifyManager {
     }
     
     addToQueue(userId, uri) {
-        this._spotifyApi.addToQueue(uri).then(result => {
+        return this._spotifyApi.addToQueue(uri).then(result => {
             if (this._spotifyRecord.tracks.length == 0) { // do some more setup, skip to next (which is the one just queued) and play from selected available device
                 this._spotifyApi.skipToNext(); // this should automatically start playing
             }
