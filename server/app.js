@@ -33,7 +33,9 @@ function checkSpotifyPlayerExpiration() {
     if (spotifyPlayer.isExpired()) {
       spotifyPlayer.delete();
     } else {
-      spotifyPlayer.refreshAccessToken();
+      if (spotifyPlayer.getAccessToken() != null) {
+        spotifyPlayer.refreshAccessToken();
+      }
     }
   }));
 }
