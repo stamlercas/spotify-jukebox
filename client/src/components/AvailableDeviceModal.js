@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Button, Modal }from 'react-bootstrap';
 import DeviceOption from './DeviceOption.js';
 import ServerApiClient from '../client/ServerApiClient.js';
+import Alert from './Alert.js';
 
 const AvailableDeviceModalState = {
     Loading: 'Loading...',
@@ -62,14 +63,19 @@ class AvailableDeviceModal extends Component {
         switch(this.state.availableDeviceModalState) {
             case AvailableDeviceModalState.Success:
                 return (
-                    <form>
-                        <div class="form-group">
-                            <label for="exampleFormControlSelect1">Devices</label>
-                            <select class="form-control" required onChange={this.deviceChangeHandler}>
-                                {this.state.data.map(device => <DeviceOption device={device}/>)}
-                            </select>
-                        </div>
-                    </form>
+                    <div>
+                        {!this.state.data.reduce((acc, val) => acc.is_active || val.is_active, false) &&
+                        <Alert type="info" text='No active media playback devices were found. Make sure the Spotify App is open on a device.'/>
+                        }
+                        <form>
+                            <div class="form-group">
+                                <label for="exampleFormControlSelect1">Devices</label>
+                                <select class="form-control" required onChange={this.deviceChangeHandler}>
+                                    {this.state.data.map(device => <DeviceOption device={device}/>)}
+                                </select>
+                            </div>
+                        </form>
+                    </div>
                 );
             default:
                 return(
