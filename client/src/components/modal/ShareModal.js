@@ -10,10 +10,19 @@ class ShareModal extends Component {
         }
 
         this.copy = this.copy.bind(this);
+        this.webShare = this.webShare.bind(this);
     }
 
     copy() {
         navigator.clipboard.writeText(window.location.href);
+    }
+
+    webShare() {
+        navigator.share({
+            title: 'Share',
+            text: 'You\'ve been invited to play music!',
+            url: window.location.href
+        })
     }
 
     render() {
@@ -34,6 +43,9 @@ class ShareModal extends Component {
                     <QRCodeSVG value={window.location.href} height="100%" width="100%" />
                 </Modal.Body>
                 <Modal.Footer>
+                    <Button variant="info" onClick={this.webShare}>
+                    More Ways to Share...
+                    </Button>
                     <Button variant="secondary" onClick={this.props.close}>
                     Close
                     </Button>
