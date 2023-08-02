@@ -92,7 +92,7 @@ class SpotifyManager {
             playerDao.update(this._spotifyRecord.playerId, {accessToken: data.body.access_token, refreshToken: data.body.refresh_token})
             .then(() => rebuild(this))
             // response does not depend on the next calls so can call them while response is redirected
-            .then(() => this._spotifyApi.pause().catch(error => console.log(error)));
+            .then(() => this._spotifyApi.pause().catch(error => console.log("authorizationCodeGrant", error)));
 
             return data;
         })
