@@ -43,9 +43,10 @@ class ShareModal extends Component {
                     <QRCodeSVG value={window.location.href} height="100%" width="100%" />
                 </Modal.Body>
                 <Modal.Footer>
+                    { (navigator.canShare && navigator.canShare()) &&
                     <Button variant="info" onClick={this.webShare}>
                     More Ways to Share...
-                    </Button>
+                    </Button>}
                     <Button variant="secondary" onClick={this.props.close}>
                     Close
                     </Button>
