@@ -11,6 +11,7 @@ var logger = require('morgan');
 var cron = require('node-cron');
 var spotifyManager = require('./manager/spotify-manager.js');
 var MongoStore = require('connect-mongo');
+var appVersion = require('../package.json').version;
 
 require('dotenv').config();
 
@@ -71,7 +72,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api', apiRouter);
 
 app.get('/', function(req, res, next) {
-  res.render('index');
+  res.render('index', {version: appVersion});
+});
+
+app.get('/about', function(req, res, next) {
+  res.render('about', {version: appVersion});
 });
 
 /**
