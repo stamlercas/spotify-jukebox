@@ -19,8 +19,8 @@ class ShareModal extends Component {
 
     webShare() {
         navigator.share({
-            title: 'Share',
-            text: 'You\'ve been invited to play music!',
+            title: 'You\'ve been invited to play music!',
+            text: 'Click the link to get started.',
             url: window.location.href
         })
     }
