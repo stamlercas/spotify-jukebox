@@ -4,6 +4,7 @@ html
     title= title
     meta(name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no")
     link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous")
+    link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css")
     style.
       a,
       a:focus,
@@ -89,6 +90,15 @@ html
         color: rgba(255, 255, 255, .5);
       }
 
+      .mastfoot nav {
+        float: right;
+      }
+
+      /** override for nav-link */
+      .nav-item {
+        padding: .5rem;
+      }
+
   body
     .cover-container.d-flex.h-100.p-3.mx-auto.flex-column
       header.masthead.mb-auto
@@ -99,3 +109,8 @@ html
         block content
       footer.mastfoot.mt-auto 
         .inner
+        nav.nav
+          a.nav-item.nav-link(href="/about") About
+          a.nav-item.nav-link(href="https://github.com/stamlercas/spotify-jukebox")
+            i.bi.bi-github
+          div.nav-item v#{version}
