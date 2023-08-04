@@ -24,7 +24,7 @@ class TrackListItem extends Component {
         return (
             <a class="list-group-item list-group-item-action">
                 <div class="row">
-                    <div class="col-2 justify-content-center align-self-center">
+                    <div class="col-2 justify-content-center align-self-center play-icon-container">
                         <span>
                             <i class="bi bi-plus play-icon" data-toggle="modal" onClick={this.toggleModal}></i>
                         </span>

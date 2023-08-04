@@ -11,6 +11,11 @@
     font-size:3em;
 }
 
+.play-icon-container {
+    padding: 0;
+    text-align: center;
+}
+
 .home-icon {
     padding-top: 0;
     margin-right:.15em;
