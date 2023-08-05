@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { withRouter } from 'react-router-dom';
 import TrackDisplay from '../TrackDisplay.js';
-import AvailableDeviceModal from "../AvailableDeviceModal.js";
+import AvailableDeviceModal from "../modal/AvailableDeviceModal.js";
 import Vibrant from 'node-vibrant';
 import ColorUtils from '../../util/ColorUtils.js';
 import DegreeUpdater from '../../util/DegreeUpdater.js';
