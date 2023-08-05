@@ -156,7 +156,8 @@ module.exports = {
             return init(spotifyRecord);
         });
     },
-    getAllSpotifyPlayers: () => playerDao.findAll().map(record => init(record)).toArray()
+    getAllSpotifyPlayers: () => playerDao.findAll().map(record => init(record)).toArray(),
+    getAllSpotifyPlayersForUser: (userId) => playerDao.findAllByUser(userId).map(record => init(record)).toArray()
 };
 
 function init(spotifyRecord) {

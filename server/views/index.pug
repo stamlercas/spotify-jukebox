@@ -5,3 +5,16 @@ block content
   p.lead Get it?
   p.lead
     a(href="/create").btn.btn-lg.btn-secondary Start
+  
+  br
+
+  if instances.length > 0
+    h3 Jump back in...
+    ul.list-unstyled
+      each instance in instances
+        li.list-instances
+          a(href="/app/#" + instance.playerId) #{instance.playerId}
+            img(src=instance.track.item.album.images[0].url).img-list
+
+
+    
