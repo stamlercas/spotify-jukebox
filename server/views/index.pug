@@ -5,3 +5,17 @@ block content
   p.lead Get it?
   p.lead
     a(href="/create").btn.btn-lg.btn-secondary Start
+    span.align-bottom &nbsp;or&nbsp;
+    a(href="https://qrcodescan.in/").btn.btn-lg.btn-secondary Connect
+  
+  br
+
+  if playerIds.length > 0
+    h3 Jump back in...
+    ul.list-unstyled
+      each id in playerIds
+        li
+          a(href="/app/#" + id) #{id}
+
+
+    

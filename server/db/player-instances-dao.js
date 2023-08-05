@@ -31,6 +31,8 @@ module.exports = {
         {$set: {expiration: new Date(Date.now() + SpotifyPlayerUtils.TIME_TO_LIVE)}}).then(result => result.value),
 
     findAll: () => db.getDb().collection(PLAYER_COLLECTION).find({isExpired: false}),
+
+    findAllByUser: (userId) => db.getDb().collection(PLAYER_COLLECTION).find({users: {$in: [userId]}, isExpired: false}),
     
     delete: (playerId) => db.getDb().collection(PLAYER_COLLECTION).updateOne({playerId: playerId}, {$set: {isExpired: true}})
   };

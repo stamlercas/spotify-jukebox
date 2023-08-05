@@ -24,6 +24,7 @@ const dbo = require('./db/conn');
 // do an initial check of spotify instances. This app could theoretically be down for a long time and an instance could lapse
 dbo.connectToServer().then(() => checkSpotifyPlayerExpiration()); 
 var apiRouter = require('./routes/api');
+const { resolve } = require('path');
 
 // set up task for refreshing access token every hour. Note this task needs to be started before it will do anything. This will happen whenever an access token is received
 var cronTask = cron.schedule('0 * * * *', () => checkSpotifyPlayerExpiration());
@@ -69,8 +70,31 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api', apiRouter);
 
 app.get('/', function(req, res, next) {
-  res.render('index');
-});
+  spotifyManager.getAllSpotifyPlayersForUser(req.session.id)
+    // .then(spotifyPlayers => res.render('index', {playerIds: {spotifyPlayers.map(player => player.getPlayerId())};
+    .then(spotifyPlayers => {
+      let promises = spotifyPlayers.map(player => {
+        return new Promise(resolve, reject, player.getCurrentlyPlayingTrack().then(track => {
+            resolve({
+              playerId: playerId,
+              track: track
+            });
+          }, err => reject(err)
+        );
+      });
+      console.log(promises);
+      Promise.all(promises).then(data => {
+        console.log(data);
+        res.render('index', data);
+      });
+    });
+      
+      
+      
+    //   res.render('index', {
+    //   playerIds: spotifyPlayers.map(playerId => playerId.getPlayerId())
+    // }))
+// });
 
 /**
  * Create new spotify instance, and redirect user.
