@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { withRouter } from 'react-router-dom';
 import { Button, Modal }from 'react-bootstrap';
-import SignatureFormInput from '../SignatureFormInput.js';
+import SignatureFormInput from '../form/SignatureFormInput.js';
 import TrackDisplay from '../TrackDisplay.js';
 import ServerApiClient from '../../client/ServerApiClient.js';
 import { properties } from "../../properties.js";

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Button, Modal }from 'react-bootstrap';
-import DeviceOption from './DeviceOption.js';
-import ServerApiClient from '../client/ServerApiClient.js';
+import DeviceOption from '../form/DeviceOption.js';
+import ServerApiClient from '../../client/ServerApiClient.js';
 
 const AvailableDeviceModalState = {
     Loading: 'Loading...',
