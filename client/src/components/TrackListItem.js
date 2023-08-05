@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { formatArtists } from '../util/ComponentUtils.js';
-import PlaySongModal from "./PlaySongModal.js";
+import PlaySongModal from "./modal/PlaySongModal.js";
 
 class TrackListItem extends Component {
     constructor(props) {

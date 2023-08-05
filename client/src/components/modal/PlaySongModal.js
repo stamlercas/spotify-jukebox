@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { withRouter } from 'react-router-dom';
 import { Button, Modal }from 'react-bootstrap';
-import SignatureFormInput from './SignatureFormInput.js';
-import TrackDisplay from './TrackDisplay.js';
-import ServerApiClient from '../client/ServerApiClient.js';
-import { properties } from "../properties.js";
-import Alert from "./Alert.js";
+import SignatureFormInput from '../SignatureFormInput.js';
+import TrackDisplay from '../TrackDisplay.js';
+import ServerApiClient from '../../client/ServerApiClient.js';
+import { properties } from "../../properties.js";
+import Alert from "../Alert.js";
 
 const PlaySongModalState = {
     Play_Song: 'Play song',
