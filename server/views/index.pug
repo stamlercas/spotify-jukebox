@@ -13,9 +13,10 @@ block content
   if instances.length > 0
     h3 Jump back in...
     ul.list-unstyled
-      each id in playerIds
-        li
-          a(href="/app/#" + id) #{id}
+      each instance in instances
+        li.list-instances
+          a(href="/app/#" + instance.playerId) #{instance.playerId}
+            img(src=instance.track.item.album.images[0].url).img-list
 
 
     

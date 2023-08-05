@@ -76,10 +76,10 @@ app.get('/', function(req, res, next) {
   spotifyManager.getAllSpotifyPlayersForUser(req.session.id)
     .then(spotifyPlayers => {
       let promises = spotifyPlayers.map(player => {
-        return new Promise((resolve, reject) => player.getCurrentlyPlayingTrack().then(track => {
+        return new Promise((resolve, reject) => player.getMyCurrentPlayingTrack().then(track => {
             resolve({
-              playerId: playerId,
-              track: track
+              playerId: player.getPlayerId(),
+              track: track.body
             });
           }, err => reject(err)
         ));
