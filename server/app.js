@@ -11,6 +11,7 @@ var logger = require('morgan');
 var cron = require('node-cron');
 var spotifyManager = require('./manager/spotify-manager.js');
 var MongoStore = require('connect-mongo');
+var appVersion = require('../package.json').version;
 
 require('dotenv').config();
 
@@ -34,7 +35,9 @@ function checkSpotifyPlayerExpiration() {
     if (spotifyPlayer.isExpired()) {
       spotifyPlayer.delete();
     } else {
-      spotifyPlayer.refreshAccessToken();
+      if (spotifyPlayer.getAccessToken() != null) {
+        spotifyPlayer.refreshAccessToken();
+      }
     }
   }));
 }
@@ -71,30 +74,27 @@ app.use('/api', apiRouter);
 
 app.get('/', function(req, res, next) {
   spotifyManager.getAllSpotifyPlayersForUser(req.session.id)
-    // .then(spotifyPlayers => res.render('index', {playerIds: {spotifyPlayers.map(player => player.getPlayerId())};
     .then(spotifyPlayers => {
       let promises = spotifyPlayers.map(player => {
-        return new Promise(resolve, reject, player.getCurrentlyPlayingTrack().then(track => {
+        return new Promise((resolve, reject) => player.getCurrentlyPlayingTrack().then(track => {
             resolve({
               playerId: playerId,
               track: track
             });
           }, err => reject(err)
-        );
+        ));
       });
-      console.log(promises);
       Promise.all(promises).then(data => {
         console.log(data);
-        res.render('index', data);
+        res.render('index', {instances: data, version: appVersion});
       });
     });
-      
-      
-      
-    //   res.render('index', {
-    //   playerIds: spotifyPlayers.map(playerId => playerId.getPlayerId())
-    // }))
-// });
+  // res.render('index', {version: appVersion});
+});
+
+app.get('/about', function(req, res, next) {
+  res.render('about', {version: appVersion});
+});
 
 /**
  * Create new spotify instance, and redirect user.

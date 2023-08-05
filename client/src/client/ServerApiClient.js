@@ -72,7 +72,7 @@ var fetchData = function(url, method = 'GET', body = {}) {
             window.location.href = '/404';
             return Promise.reject(res.statusText);
         } else if (res.status >= 400) {
-            return Promise.reject(res.statusText);
+            return res.json().then(res => Promise.reject(res.error));
         }
         return res.json();
     })

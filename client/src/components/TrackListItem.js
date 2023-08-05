@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { formatArtists } from '../util/ComponentUtils.js';
-import PlaySongModal from "./PlaySongModal.js";
+import PlaySongModal from "./modal/PlaySongModal.js";
 
 class TrackListItem extends Component {
     constructor(props) {
@@ -24,7 +24,7 @@ class TrackListItem extends Component {
         return (
             <a class="list-group-item list-group-item-action">
                 <div class="row">
-                    <div class="col-2 justify-content-center align-self-center">
+                    <div class="col-2 justify-content-center align-self-center play-icon-container">
                         <span>
                             <i class="bi bi-plus play-icon" data-toggle="modal" onClick={this.toggleModal}></i>
                         </span>

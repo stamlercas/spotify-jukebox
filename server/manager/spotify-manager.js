@@ -52,7 +52,7 @@ class SpotifyManager {
     }
     
     addToQueue(userId, uri) {
-        this._spotifyApi.addToQueue(uri).then(result => {
+        return this._spotifyApi.addToQueue(uri).then(result => {
             if (this._spotifyRecord.tracks.length == 0) { // do some more setup, skip to next (which is the one just queued) and play from selected available device
                 this._spotifyApi.skipToNext(); // this should automatically start playing
             }
@@ -92,7 +92,7 @@ class SpotifyManager {
             playerDao.update(this._spotifyRecord.playerId, {accessToken: data.body.access_token, refreshToken: data.body.refresh_token})
             .then(() => rebuild(this))
             // response does not depend on the next calls so can call them while response is redirected
-            .then(() => this._spotifyApi.pause().catch(error => console.log(error)));
+            .then(() => this._spotifyApi.pause().catch(error => console.log("authorizationCodeGrant", error)));
 
             return data;
         })

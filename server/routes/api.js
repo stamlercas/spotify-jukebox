@@ -5,6 +5,15 @@ var spotifyPlayerUtils = require('../util/spotify-player-utils.js');
 
 var spotifyManager = require('../manager/spotify-manager.js');
 
+var buildError = (code, message) => {
+  return {
+    error: {
+      code: code, 
+      message: message
+    }
+  }
+};
+
 /**
  * Router level middleware to detect that authorization has been made to use spotify
  */
@@ -123,7 +132,8 @@ router.post('/queue', function(req, res, next) {
         console.log('No active device found.');
         break;
     }
-    next(error);
+    res.statusCode = 500;
+    next(buildError(error.body.error.reason, error.body.error.message));
   });  
 });
 
