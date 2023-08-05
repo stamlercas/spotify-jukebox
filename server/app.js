@@ -85,7 +85,6 @@ app.get('/', function(req, res, next) {
         ));
       });
       Promise.all(promises).then(data => {
-        console.log(data);
         res.render('index', {instances: data, version: appVersion});
       });
     });
