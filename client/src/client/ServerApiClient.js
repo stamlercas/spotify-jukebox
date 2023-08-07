@@ -58,6 +58,12 @@ ServerApiClient.prototype.setAvailableDevice = (deviceId) =>
  */
  ServerApiClient.prototype.reset = () => fetchData('/api/reset', 'POST');
 
+ /**
+ * Delete instance
+ * @param {string} deviceId 
+ */
+ ServerApiClient.prototype.delete = () => fetchData('/api/', 'DELETE');
+
 /**
  * Intended to intercept the response of an api call to look for a redirect url. If 
  * a redirect url is found, then we want to redirect the window to the given url. This

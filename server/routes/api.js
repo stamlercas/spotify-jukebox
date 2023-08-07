@@ -169,6 +169,13 @@ router.post('/reset', function(req, res, next) {
   res.end();
 });
 
+router.delete('/', function(req, res) {
+  res.locals.spotifyPlayer.delete().then(() => {
+    res.statusCode = 204;
+    res.send.bind(res.send());
+  });
+});
+
 router.get('/audio-analysis/:id', function(req, res, next) {
   let id = req.params.id;
   res.locals.spotifyPlayer.getAudioAnalysisForTrack(id)

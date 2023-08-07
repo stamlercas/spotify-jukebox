@@ -107,7 +107,6 @@ class SpotifyManager {
     }
 
     delete() {
-        console.log(`Spotify instance ${this.getPlayerId()} has expired...`);
         playerDao.delete(this.getPlayerId());
     }
 

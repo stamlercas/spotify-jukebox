@@ -33,6 +33,7 @@ var cronTask = cron.schedule('0 * * * *', () => checkSpotifyPlayerExpiration());
 function checkSpotifyPlayerExpiration() {
   spotifyManager.getAllSpotifyPlayers().then(list => list.forEach(spotifyPlayer => {
     if (spotifyPlayer.isExpired()) {
+      console.log(`Spotify instance ${spotifyPlayer.getPlayerId()} has expired...`);
       spotifyPlayer.delete();
     } else {
       if (spotifyPlayer.getAccessToken() != null) {

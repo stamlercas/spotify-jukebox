@@ -10,21 +10,16 @@ class SettingsPage extends Component {
         this.state = {
             alerts: []
         };
-        this.reset = this.reset.bind(this);
+        this.delete = this.delete.bind(this);
         this.toggleVisualizations = this.toggleVisualizations.bind(this);
         this.toggleAdminMode = this.toggleAdminMode.bind(this);
     }
 
-    reset() {
-        ServerApiClient.reset().then(res => {
-            let isSuccess = res.status == 204;
+    delete() {
+        ServerApiClient.delete().then(res => {
             document.getElementById('visualization-switch').setAttribute('disabled', true);
             document.getElementById('admin-mode-switch').setAttribute('disabled', true);
-            this.setState(prevState => ({
-                    alerts: [(isSuccess
-                        ? <Alert type="success" text={`App reset successfully! Return to <a href="/app/${window.location.hash}">home page</a> to set up app.`}/>
-                        : <Alert type="danger" text="<strong>Woah..</strong> Something went seriously wrong!"/>), prevState.alerts]
-            }));
+            window.location.href = '/';
         });
     }
 
@@ -68,7 +63,7 @@ class SettingsPage extends Component {
 
                 { cookies.getBoolean(properties.cookies.administratorMode) &&
                     <ul class="list-group">
-                        <li class="list-group-item"><a href={window.location.hash} onClick={this.reset}>Reset</a></li>
+                        <li class="list-group-item"><button type="button" class="btn btn-link" onClick={this.delete}>Delete</button></li>
                     </ul>
                 }
             </div>
