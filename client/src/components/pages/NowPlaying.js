@@ -106,11 +106,11 @@ class NowPlaying extends Component {
                     if (!this.state.isVisualizationEnabled) {
                         // set background color gradient according album art                    
                         document.getElementsByTagName('body')[0].style.backgroundAttachment = "fixed";
-                        document.getElementsByTagName('body')[0].style.backgroundImage = "linear-gradient(" + this.degreeUpdater.getDegree() + "deg, "
-                                + palette.Vibrant.getHex() + ", " + palette.DarkVibrant.getHex() +")"; 
-                        document.getElementsByTagName('body')[0].style.backgroundColor = palette.DarkVibrant.getHex();
+                        document.getElementsByTagName('body')[0].style.backgroundImage = "linear-gradient(" + this.degreeUpdater.getDegree() + "deg, transparent"
+                             + ", " + palette.DarkMuted.getHex() + ")";
+                        document.getElementsByTagName('body')[0].classList.add("bg-dark");
 
-                        document.getElementsByClassName('track-display')[0].style.color = ColorUtils.getMostContrast(palette.Vibrant, 
+                        document.getElementsByClassName('track-display')[0].style.color = ColorUtils.getMostContrast([52, 58, 64],  // TODO: get this dynamically
                             [palette.LightMuted, palette.DarkMuted, palette.LightVibrant, palette.Muted]).getHex();
                     } else {
                         // set theme to album
@@ -140,8 +140,10 @@ class NowPlaying extends Component {
                         </div>
                     ) 
                     : ( 
-                        <div  class="full-screen-display track-vertical-align">
-                            <TrackDisplay track={this.state.track} /> 
+                        <div>
+                            <div  class="full-screen-display track-vertical-align">
+                                <TrackDisplay track={this.state.track} /> 
+                            </div>
                         </div>
                     );
             default:
