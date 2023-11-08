@@ -120,12 +120,13 @@ class NowPlaying extends Component {
      * Update styling to match track being played
      */
     updateStyles() {
+        let body = document.getElementsByTagName('body')[0];
         if (this.state.playerState == PlayerState.Playing) {
             let v = new Vibrant(this.state.track.album.images[0].url);
             v.getPalette((err, palette) => {
-                let body = document.getElementsByTagName('body')[0];
                 if (!this.state.isVisualizationEnabled) {
-                    body.style.backgroundImage = "linear-gradient(to top, rgb(52, 58, 64) calc(100% - calc(100vh)), " + palette.DarkMuted.getHex() + ")";
+                    body.style.setProperty("--gradient-color", palette.DarkMuted.getHex());
+                    body.classList.add("body-gradient");
 
                     document.getElementsByClassName('track-item')[0].style.color = ColorUtils.getMostContrast([52, 58, 64],  // TODO: get this dynamically
                         [palette.LightMuted, palette.DarkMuted, palette.LightVibrant, palette.Muted]).getHex();
@@ -135,8 +136,7 @@ class NowPlaying extends Component {
                 }
             });
         } else {
-            document.getElementsByTagName('body')[0].style.backgroundAttachment = "";
-            document.getElementsByTagName('body')[0].style.backgroundImage = ""; 
+            body.classList.remove("body-gradient");
         }
     }
 

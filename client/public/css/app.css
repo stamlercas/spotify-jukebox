@@ -145,3 +145,10 @@
 .queue-item .card-body {
     padding: 1.25rem 0;
 }
+
+.body-gradient {
+    --gradient-color: var(--dark);
+    --gradient-length: calc(75vh);
+
+    background-image: linear-gradient(to top, var(--dark) calc(100% - var(--gradient-length)), var(--gradient-color));
+}
