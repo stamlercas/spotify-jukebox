@@ -131,3 +131,17 @@
 .clipboard-container {
     padding-bottom: 20px;
 }
+
+.queue-container {
+    overflow: auto;
+}
+
+.queue-item.card {
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+}
+
+.queue-item .card-body {
+    padding: 1.25rem 0;
+}
