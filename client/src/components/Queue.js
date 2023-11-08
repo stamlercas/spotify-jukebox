@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import QueueItem from "./QueueItem";
 import ServerApiClient from "../client/ServerApiClient";
+import ObjectUtils from "../util/ObjectUtils";
 
 class Queue extends Component {
     constructor(props) {
@@ -9,7 +10,7 @@ class Queue extends Component {
             queue: {}
         };
 
-        this.updateQueue = setInterval(() => this.getQueue(), 5000);
+        this.updateQueue = setInterval(() => this.getQueue(), 2000);
 
         this.getQueue = this.getQueue.bind(this);
     }
@@ -30,9 +31,15 @@ class Queue extends Component {
         let queue = this.state.queue;
         let maxQueueSize = 4;
         return (
-            <div class="queue-container row flex-row flex-nowrap">
-                {this.state.queue.queue != null &&
-                    this.state.queue.queue.slice(0, maxQueueSize).map((item, index) => <QueueItem item={item} positiveIndex={index + 1}/>)}
+            <div>
+            { ObjectUtils.isEmpty(this.state.queue.queue)
+                ? 
+                    <div class="text-center p-1">There is nothing upcoming in the queue.</div>
+                : 
+                    <div class="queue-container row flex-row flex-nowrap">
+                        {this.state.queue.queue.slice(0, maxQueueSize).map((item, index) => <QueueItem item={item} positiveIndex={index + 1}/>)}
+                    </div>
+            }
             </div>
         );
     }
