@@ -36,7 +36,7 @@ class Queue extends Component {
                 ? 
                     <div class="text-center p-1">There is nothing upcoming in the queue.</div>
                 : 
-                    <div class="queue-container row flex-row flex-nowrap">
+                    <div class="queue-list row flex-row flex-nowrap">
                         {this.state.queue.queue.slice(0, maxQueueSize).map((item, index) => <QueueItem item={item} positiveIndex={index + 1}/>)}
                     </div>
             }

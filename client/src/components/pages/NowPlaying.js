@@ -157,7 +157,7 @@ class NowPlaying extends Component {
                             <div  class="full-screen-display track-vertical-align">
                                 <TrackDisplay track={this.state.track} /> 
                             </div>
-                            <div class="text-white">
+                            <div class="text-white queue-container">
                                 <h3>Upcoming</h3>
                                 <Queue />
                             </div>

@@ -23,7 +23,7 @@
 }
 
 .full-screen-display {
-    min-height: calc(100vh - 80px);
+    min-height: calc(100vh - 100px);
 }
 
 .track-vertical-align {
@@ -133,6 +133,10 @@
 }
 
 .queue-container {
+    padding-top:20px;
+}
+
+.queue-list {
     overflow: auto;
 }
 
