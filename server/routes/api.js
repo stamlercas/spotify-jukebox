@@ -184,6 +184,15 @@ router.get('/track-features/:id', function(req, res, next) {
 });
 
 /**
+ * Returns a user's queue.
+ */
+router.get('/queue', function(req, res, next) {
+  res.locals.spotifyPlayer.getMyQueue()
+    .then(result => res.send.bind(res.send(result.body)))
+    .catch(error => next(error));
+});
+
+/**
  * Take the code sent from Spotify and grant an access token and save it.
  * Once done, redirect back to home page.
  */

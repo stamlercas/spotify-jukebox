@@ -2,7 +2,7 @@ const playerDao = require('../db/player-instances-dao');
 const WordUtils = require('../util/word-utils.js');
 var spotifyPlayerUtils = require('../util/spotify-player-utils.js');
 
-var SpotifyWebApi = require('spotify-web-api-node');
+var SpotifyWebApi = require('spotify-web-api-nodejs');
 
 /**
  * Layer responsible for talking to db and api
@@ -49,6 +49,10 @@ class SpotifyManager {
 
     getSpotifyRecord() {
         return this._spotifyRecord;
+    }
+
+    getMyQueue() {
+        return this._spotifyApi.getMyQueue();
     }
     
     addToQueue(userId, uri) {

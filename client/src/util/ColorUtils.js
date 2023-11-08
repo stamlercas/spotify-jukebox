@@ -7,11 +7,15 @@ const { Swatch } = require("node-vibrant/lib/color");
 
 /**
  * Use a list of swatches and sort them by most contrast
- * @param {Swatch} swatch swatch to compare against other swatches
+ * @param {*} swatch swatch to compare against other swatches
  * @param {*} swatches list of swatches
  * @returns 
  */
 ColorUtils.prototype.getMostContrast = (swatch, swatches) => {
+    if (swatch.constructor === Array) { // can be list [r, g, b]
+        swatch = new Swatch(swatch, 0);
+    }
+
     let maxContrastSwatch;      // contains swatch with highest ratio
     let maxContrastSwatchRatio = 0; // contains actual ratio value for swatch
     swatches.forEach(s => {

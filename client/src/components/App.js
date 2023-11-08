@@ -35,9 +35,7 @@ class App extends Component {
       }});
         socket.on("NowPlaying", response => {
             let data = JSON.parse(response);
-            if (!ObjectUtils.isEmpty(data.body)) {
-              this.setState({data: data.body.item});
-            }
+            this.setState({data: data.body.item});
         });
   }
 
