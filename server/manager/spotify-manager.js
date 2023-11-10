@@ -57,8 +57,10 @@ class SpotifyManager {
     
     addToQueue(userId, uri) {
         return this._spotifyApi.addToQueue(uri).then(result => {
-            if (this._spotifyRecord.tracks.length == 0) { // do some more setup, skip to next (which is the one just queued) and play from selected available device
+            // do some more setup, skip to next (which is the one just queued) and play from selected available device
+            if (this._spotifyRecord.tracks.length == 0 && this._spotifyRecord.skipToNext) { 
                 this._spotifyApi.skipToNext(); // this should automatically start playing
+                    
             }
             // add track to collection
             this._spotifyApi.getTrack(uri.split(":")[2]).then(result => playerDao.addTrack(this._spotifyRecord.playerId, userId, result.body));
@@ -77,8 +79,12 @@ class SpotifyManager {
         return this._spotifyApi.getMyDevices().then(result => (result.body.devices));
     }
 
-    setPlaybackDevice() {
+    setPlaybackDevice(deviceId) {
         return this._spotifyApi.transferMyPlayback([deviceId]);
+    }
+
+    setSkipToNext(skipToNext) {
+        playerDao.update(this._spotifyRecord.playerId, {skipToNext: skipToNext});
     }
 
     getAudioAnalysisForTrack(track) {
@@ -95,8 +101,6 @@ class SpotifyManager {
             // Set the access token on the API object to use it in later calls
             playerDao.update(this._spotifyRecord.playerId, {accessToken: data.body.access_token, refreshToken: data.body.refresh_token})
             .then(() => rebuild(this))
-            // response does not depend on the next calls so can call them while response is redirected
-            .then(() => this._spotifyApi.pause().catch(error => console.log("authorizationCodeGrant", error)));
 
             return data;
         })

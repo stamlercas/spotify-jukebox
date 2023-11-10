@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { withRouter } from 'react-router-dom';
 import TrackDisplay from '../TrackDisplay.js';
-import AvailableDeviceModal from "../modal/AvailableDeviceModal.js";
+import AvailableDeviceModal from "../modal/SetupModal.js";
 import Vibrant from 'node-vibrant';
 import ColorUtils from '../../util/ColorUtils.js';
 import ObjectUtils from '../../util/ObjectUtils.js';
@@ -49,6 +49,8 @@ class NowPlaying extends Component {
      * Called after render
      */
     componentDidMount() {
+        window.scrollTo(0, 0);
+
         let queryParameters = queryStringParser.parse(this.props.location.search);
         if (queryParameters.activation_success) {   // server side was just activated, so prompt to select available devices
             this.toggleModal();
@@ -77,8 +79,9 @@ class NowPlaying extends Component {
             this.visualization.stop();
             this.visualization = null;
         } else {
-            document.getElementsByTagName('body')[0].style.backgroundImage = '';
-            document.getElementsByTagName('body')[0].style.backgroundColor = '#fff';
+            document.body.className = '';
+            document.body.style.backgroundImage = '';
+            document.body.style.backgroundColor = '#fff';
         }
     }
 
@@ -207,7 +210,7 @@ class NowPlaying extends Component {
                 <div class="track-display">
                     {this.getDisplay()}
                 </div>
-                <AvailableDeviceModal show={this.state.showModal} close={this.toggleModal} closeable={false} />
+                <AvailableDeviceModal show={this.state.showModal} close={this.toggleModal} />
             </div>
         )
     }

@@ -149,17 +149,19 @@ router.get('/devices', function(req, res, next) {
 /**
  * Set playback device.
  */
-router.post('/devices', function(req, res, next) {
+router.post('/setup', function(req, res, next) {
   if (!req.body.deviceId || req.body.deviceId == '') {
     res.statusCode = 406;
-    res.json({ message: "No query found." });
+    res.json({ message: "No playback device found." });
     return;
   }
   let deviceId = req.body.deviceId;
-  res.locals.spotifyPlayer.setPlaybackDevice(deviceId).then(res => console.log('Set device: ' + deviceId));
+  let skipToNext = req.body.skipToNext;
 
-  res.statusCode = 204;
-  res.end();
+  res.locals.spotifyPlayer.setPlaybackDevice(deviceId).then(res => console.log('Set device: ' + deviceId));
+  res.locals.spotifyPlayer.setSkipToNext(skipToNext);  // default to false
+
+  res.sendStatus(204);
 });
 
 router.post('/reset', function(req, res, next) {
