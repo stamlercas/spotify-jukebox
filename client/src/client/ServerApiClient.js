@@ -53,9 +53,10 @@ ServerApiClient.prototype.addToQueue = (track) =>
  * Set device to be played from.
  * @param {string} deviceId 
  */
-ServerApiClient.prototype.setAvailableDevice = (deviceId) =>
-    fetchData('/api/devices', 'POST', {
-        deviceId: deviceId
+ServerApiClient.prototype.setup = (deviceId, skipToNext) =>
+    fetchData('/api/setup', 'POST', {
+        deviceId: deviceId,
+        skipToNext: skipToNext
     });
 
 /**
