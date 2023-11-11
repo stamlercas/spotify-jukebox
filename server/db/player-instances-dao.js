@@ -15,6 +15,7 @@ module.exports = {
             refreshToken: refreshToken,
             expiration: new Date(Date.now() + SpotifyPlayerUtils.TIME_TO_LIVE),
             isExpired: false,
+            skipToNext: false,
             tracks: []
         }
         db.getDb().collection(PLAYER_COLLECTION).insertOne(document);

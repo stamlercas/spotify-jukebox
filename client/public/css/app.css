@@ -131,3 +131,28 @@
 .clipboard-container {
     padding-bottom: 20px;
 }
+
+.queue-container {
+    padding-top:20px;
+}
+
+.queue-list {
+    overflow: auto;
+}
+
+.queue-item.card {
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+}
+
+.queue-item .card-body {
+    padding: 1.25rem 0;
+}
+
+.body-gradient {
+    --gradient-color: var(--dark);
+    --gradient-length: calc(75vh);
+
+    background-image: linear-gradient(to top, var(--dark) calc(100% - var(--gradient-length)), var(--gradient-color));
+}

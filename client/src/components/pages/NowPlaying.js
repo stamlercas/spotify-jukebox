@@ -1,16 +1,16 @@
 import React, { Component } from "react";
 import { withRouter } from 'react-router-dom';
 import TrackDisplay from '../TrackDisplay.js';
-import AvailableDeviceModal from "../modal/AvailableDeviceModal.js";
+import AvailableDeviceModal from "../modal/SetupModal.js";
 import Vibrant from 'node-vibrant';
 import ColorUtils from '../../util/ColorUtils.js';
-import DegreeUpdater from '../../util/DegreeUpdater.js';
 import ObjectUtils from '../../util/ObjectUtils.js';
 import Visualization from '../../spotify-viz/visualization.js';
 import StickyTrackDisplay from "../StickyTrackDisplay.js";
 import * as cookies from '../../spotify-viz/util/cookie.js';
 import { properties } from "../../properties.js";
 import SpotifyPlayerUtils from "../../util/SpotifyPlayerUtils.js";
+import Queue from "../Queue.js";
 
 const queryStringParser = require('query-string');
 
@@ -36,6 +36,7 @@ class NowPlaying extends Component {
         this.setNowPlayingSong = this.setNowPlayingSong.bind(this);
         this.getVisualization = this.getVisualization.bind(this);
         this.initVisualization = this.initVisualization.bind(this);
+        this.updateStyles = this.updateStyles.bind(this);
     }
 
     toggleModal() {
@@ -48,6 +49,8 @@ class NowPlaying extends Component {
      * Called after render
      */
     componentDidMount() {
+        window.scrollTo(0, 0);
+
         let queryParameters = queryStringParser.parse(this.props.location.search);
         if (queryParameters.activation_success) {   // server side was just activated, so prompt to select available devices
             this.toggleModal();
@@ -65,8 +68,6 @@ class NowPlaying extends Component {
                 hash: window.location.hash
             });
         }
-        
-        this.degreeUpdater = new DegreeUpdater();
 
         this.visualization = this.getVisualization();
 
@@ -74,20 +75,33 @@ class NowPlaying extends Component {
     }
 
     componentWillUnmount() {
-        this.degreeUpdater.stop();
         if(this.state.isVisualizationEnabled) {
             this.visualization.stop();
             this.visualization = null;
         } else {
-            document.getElementsByTagName('body')[0].style.backgroundImage = '';
-            document.getElementsByTagName('body')[0].style.backgroundColor = '#fff';
+            document.body.className = '';
+            document.body.style.backgroundImage = '';
+            document.body.style.backgroundColor = '#fff';
+        }
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (!ObjectUtils.isEmpty(nextProps.data)) {
+            if (prevState.data == null || nextProps.data.id !== prevState.data.id) {
+                return {
+                    track: nextProps.data,
+                    playerState: PlayerState.Playing
+                }
+            }
+        } else {
+            return {
+                playerState: PlayerState.Not_Playing
+            }
         }
     }
 
     componentDidUpdate(prevProps) {
-        if (this.props.data !== prevProps.data ) {
-            this.setNowPlayingSong(prevProps.data);
-        }
+        this.updateStyles();
     }
 
     /**
@@ -100,30 +114,32 @@ class NowPlaying extends Component {
                 track: track,
                 playerState: PlayerState.Playing
             });
-            if (this.state.playerState == PlayerState.Playing) {
-                let v = new Vibrant(this.state.track.album.images[0].url);
-                v.getPalette((err, palette) => {
-                    if (!this.state.isVisualizationEnabled) {
-                        // set background color gradient according album art                    
-                        document.getElementsByTagName('body')[0].style.backgroundAttachment = "fixed";
-                        document.getElementsByTagName('body')[0].style.backgroundImage = "linear-gradient(" + this.degreeUpdater.getDegree() + "deg, "
-                                + palette.Vibrant.getHex() + ", " + palette.DarkVibrant.getHex() +")"; 
-                        document.getElementsByTagName('body')[0].style.backgroundColor = palette.DarkVibrant.getHex();
-
-                        document.getElementsByClassName('track-display')[0].style.color = ColorUtils.getMostContrast(palette.Vibrant, 
-                            [palette.LightMuted, palette.DarkMuted, palette.LightVibrant, palette.Muted]).getHex();
-                    } else {
-                        // set theme to album
-                        this.getVisualization().setPalette(palette);
-                    }
-                });
-            } else {
-                document.getElementsByTagName('body')[0].style.backgroundAttachment = "";
-                document.getElementsByTagName('body')[0].style.backgroundImage = ""; 
-                document.getElementsByClassName('track-display')[0].style.color = "";
-            }
         } else {
             this.setState({playerState: PlayerState.Not_Playing});
+        }
+    }
+
+    /**
+     * Update styling to match track being played
+     */
+    updateStyles() {
+        let body = document.getElementsByTagName('body')[0];
+        if (this.state.playerState == PlayerState.Playing) {
+            let v = new Vibrant(this.state.track.album.images[0].url);
+            v.getPalette((err, palette) => {
+                if (!this.state.isVisualizationEnabled) {
+                    body.style.setProperty("--gradient-color", palette.DarkMuted.getHex());
+                    body.classList.add("body-gradient");
+
+                    document.getElementsByClassName('track-item')[0].style.color = ColorUtils.getMostContrast([52, 58, 64],  // TODO: get this dynamically
+                        [palette.LightMuted, palette.DarkMuted, palette.LightVibrant, palette.Muted]).getHex();
+                } else {
+                    // set theme to album
+                    this.getVisualization().setPalette(palette);
+                }
+            });
+        } else {
+            body.classList.remove("body-gradient");
         }
     }
 
@@ -140,8 +156,14 @@ class NowPlaying extends Component {
                         </div>
                     ) 
                     : ( 
-                        <div  class="full-screen-display track-vertical-align">
-                            <TrackDisplay track={this.state.track} /> 
+                        <div>
+                            <div  class="full-screen-display track-vertical-align">
+                                <TrackDisplay track={this.state.track} /> 
+                            </div>
+                            <div class="text-white queue-container">
+                                <h3>Upcoming</h3>
+                                <Queue />
+                            </div>
                         </div>
                     );
             default:
@@ -188,7 +210,7 @@ class NowPlaying extends Component {
                 <div class="track-display">
                     {this.getDisplay()}
                 </div>
-                <AvailableDeviceModal show={this.state.showModal} close={this.toggleModal} closeable={false} />
+                <AvailableDeviceModal show={this.state.showModal} close={this.toggleModal} />
             </div>
         )
     }

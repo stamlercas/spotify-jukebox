@@ -35,6 +35,12 @@ ServerApiClient.prototype.getAlbum = (id) => fetchData('/api/album/' + id);
 ServerApiClient.prototype.search = (query) => fetchData("/api/search/?q=" + query);
 
 /**
+ * Search for artists and tracks using the given query.
+ * @param {string} query 
+ */
+ServerApiClient.prototype.getQueue = (query) => fetchData("/api/queue");
+
+/**
  * Add track to queue using uri.
  * @param {Track} uri 
  */
@@ -47,9 +53,10 @@ ServerApiClient.prototype.addToQueue = (track) =>
  * Set device to be played from.
  * @param {string} deviceId 
  */
-ServerApiClient.prototype.setAvailableDevice = (deviceId) =>
-    fetchData('/api/devices', 'POST', {
-        deviceId: deviceId
+ServerApiClient.prototype.setup = (deviceId, skipToNext) =>
+    fetchData('/api/setup', 'POST', {
+        deviceId: deviceId,
+        skipToNext: skipToNext
     });
 
 /**
