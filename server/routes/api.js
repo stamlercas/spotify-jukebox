@@ -171,11 +171,16 @@ router.post('/reset', function(req, res, next) {
   res.end();
 });
 
-router.delete('/', function(req, res) {
-  res.locals.spotifyPlayer.delete().then(() => {
-    res.statusCode = 204;
-    res.send.bind(res.send());
-  });
+router.delete('/', function(req, res, next) {
+  if (res.locals.spotifyPlayer.getSpotifyRecord().creator == req.session.id) {
+    res.locals.spotifyPlayer.delete().then(() => {
+      res.statusCode = 204;
+      res.send.bind(res.send());
+    });
+  } else {
+    res.statusCode = 403;
+    next(buildError(null, 'You are not authorized to delete this instance.'), req, res);
+  }
 });
 
 router.get('/audio-analysis/:id', function(req, res, next) {
@@ -228,8 +233,7 @@ router.get('/setAccessToken', function(req, res) {
 
 // error handler
 router.use(function(err, req, res, next) {
-  res.status(res.statusCode || 500);
-  res.json(err);
+  res.status(res.statusCode || 500).json(err);
 });
 
 

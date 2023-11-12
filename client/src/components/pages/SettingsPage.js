@@ -3,16 +3,21 @@ import ServerApiClient from '../../client/ServerApiClient.js';
 import Alert from "../Alert.js";
 import * as cookies from '../../spotify-viz/util/cookie.js'
 import { properties } from "../../properties.js";
+import ConfirmationModal from "../modal/ConfirmationModal.js";
 
 class SettingsPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            alerts: []
+            alerts: [],
+            deleteModal: false
         };
+
         this.delete = this.delete.bind(this);
         this.toggleVisualizations = this.toggleVisualizations.bind(this);
         this.toggleAdminMode = this.toggleAdminMode.bind(this);
+        this.showDeleteModal = this.showDeleteModal.bind(this);
+        this.closeDeleteModal = this.closeDeleteModal.bind(this);
     }
 
     delete() {
@@ -20,6 +25,11 @@ class SettingsPage extends Component {
             document.getElementById('visualization-switch').setAttribute('disabled', true);
             document.getElementById('admin-mode-switch').setAttribute('disabled', true);
             window.location.href = '/';
+        }).catch(err => {
+            this.setState(prevState => ({
+                alerts: [<Alert type="danger" text={`${err.message}`}/>, prevState.alerts]
+            }));
+            this.closeDeleteModal();
         });
     }
 
@@ -29,6 +39,14 @@ class SettingsPage extends Component {
 
     toggleAdminMode(event) {
         cookies.set(properties.cookies.administratorMode, event.target.checked);
+    }
+
+    showDeleteModal() {
+        this.setState({deleteModal: true});
+    }
+
+    closeDeleteModal() {
+        this.setState({deleteModal: false});
     }
 
     render() {
@@ -63,9 +81,11 @@ class SettingsPage extends Component {
 
                 { cookies.getBoolean(properties.cookies.administratorMode) &&
                     <ul class="list-group">
-                        <li class="list-group-item"><button type="button" class="btn btn-link" onClick={this.delete}>Delete</button></li>
+                        <li class="list-group-item"><button type="button" class="btn btn-link text-danger" onClick={this.showDeleteModal}>Delete</button></li>
                     </ul>
                 }
+
+                <ConfirmationModal show={this.state.deleteModal} close={this.closeDeleteModal} message="Are you sure you want to delete this instance?" action={this.delete} />
             </div>
         );
     }
